@@ -1,0 +1,16 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_8",
+  "package": "fuzs.visualworkbench.mixin",
+  "refmap": "visualworkbench.refmap.json",
+  "mixins": [
+    "CraftingTableBlockMixin",
+    "accessor.IWorkbenchContainerAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
