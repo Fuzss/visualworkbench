@@ -15,16 +15,21 @@ import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.LockableTileEntity;
 import net.minecraft.util.IWorldPosCallable;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.LightType;
 
 import javax.annotation.Nullable;
 
 public class WorkbenchTileEntity extends LockableTileEntity implements ITickableTileEntity {
 
     private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+
+    public int ticks;
     public double playerAngle;
+    public int combinedLight;
 
     @SuppressWarnings("ConstantConditions")
     public WorkbenchTileEntity() {
@@ -164,12 +169,44 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
     @Override
     public void tick() {
 
+        if (!this.hasLevel() || !this.level.isClientSide) {
+
+            return;
+        }
+
         PlayerEntity playerentity = this.level.getNearestPlayer((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D, 3.0D, false);
         if (playerentity != null) {
 
             double d0 = playerentity.getX() - ((double)this.worldPosition.getX() + 0.5D);
             double d1 = playerentity.getZ() - ((double)this.worldPosition.getZ() + 0.5D);
             this.playerAngle = (Math.atan2(-d0, -d1) + 3.9269908169872414D) % 6.283185307179586D;
+        }
+
+        // renderer checks inside of this block where lighting will be 0, so we instead check above
+        this.combinedLight = this.getLevel() != null ? getLightColor(this.getLevel(), this.getBlockPos().above()) : 15728880;
+        ++this.ticks;
+    }
+
+    public static int getLightColor(IBlockDisplayReader displayReader, BlockPos pos) {
+
+        return getLightColor(displayReader, displayReader.getBlockState(pos), pos);
+    }
+
+    public static int getLightColor(IBlockDisplayReader displayReader, BlockState state, BlockPos pos) {
+
+        if (state.emissiveRendering(displayReader, pos)) {
+
+            return 15728880;
+        } else {
+
+            int i = displayReader.getBrightness(LightType.SKY, pos);
+            int j = displayReader.getBrightness(LightType.BLOCK, pos);
+            int k = state.getLightValue(displayReader, pos);
+            if (j < k) {
+                j = k;
+            }
+
+            return i << 20 | j << 4;
         }
     }
 

@@ -86,7 +86,7 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
             if (tileentity instanceof WorkbenchTileEntity) {
 
                 player.openMenu((WorkbenchTileEntity) tileentity);
-                player.awardStat(Stats.INTERACT_WITH_BREWINGSTAND);
+                player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
             }
 
             callbackInfo.setReturnValue(ActionResultType.CONSUME);
