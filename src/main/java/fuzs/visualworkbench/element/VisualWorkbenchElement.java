@@ -3,12 +3,17 @@ package fuzs.visualworkbench.element;
 import fuzs.puzzleslib.PuzzlesLib;
 import fuzs.puzzleslib.element.extension.ClientExtensibleElement;
 import fuzs.visualworkbench.VisualWorkbench;
+import fuzs.visualworkbench.block.IWorkbenchTileEntityProvider;
 import fuzs.visualworkbench.client.element.VisualWorkbenchExtension;
 import fuzs.visualworkbench.inventory.container.VisualWorkbenchContainer;
 import fuzs.visualworkbench.tileentity.WorkbenchTileEntity;
-import net.minecraft.block.Blocks;
+import net.minecraft.block.Block;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
 public class VisualWorkbenchElement extends ClientExtensibleElement<VisualWorkbenchExtension> {
@@ -30,12 +35,23 @@ public class VisualWorkbenchElement extends ClientExtensibleElement<VisualWorkbe
         return new String[]{"Changing the in-game models to allow for better animations and subtle effects."};
     }
 
-    @SuppressWarnings("ConstantConditions")
     @Override
     public void setupCommon() {
 
-        PuzzlesLib.getRegistryManager().register("crafting_table", TileEntityType.Builder.of(WorkbenchTileEntity::new, Blocks.CRAFTING_TABLE).build(null));
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::onRegistryRegister);
         PuzzlesLib.getRegistryManager().register("crafting", new ContainerType<>(VisualWorkbenchContainer::new));
+    }
+
+    @SuppressWarnings("ConstantConditions")
+    private void onRegistryRegister(final RegistryEvent.Register<TileEntityType<?>> evt) {
+
+        // blocks are registered first, so this works for modded crafting tables
+        TileEntityType<WorkbenchTileEntity> tileEntityType = TileEntityType.Builder.of(WorkbenchTileEntity::new, ForgeRegistries.BLOCKS.getValues().stream()
+                .filter(block -> block instanceof IWorkbenchTileEntityProvider && ((IWorkbenchTileEntityProvider) block).hasWorkbenchTileEntity())
+                .toArray(Block[]::new)).build(null);
+
+        tileEntityType.setRegistryName(new ResourceLocation(VisualWorkbench.MODID, "crafting_table"));
+        evt.getRegistry().register(tileEntityType);
     }
 
 }

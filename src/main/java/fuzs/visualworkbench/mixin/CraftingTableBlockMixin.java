@@ -1,5 +1,6 @@
 package fuzs.visualworkbench.mixin;
 
+import fuzs.visualworkbench.block.IWorkbenchTileEntityProvider;
 import fuzs.visualworkbench.tileentity.WorkbenchTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -25,11 +26,32 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @SuppressWarnings({"deprecation", "unused"})
 @Mixin(CraftingTableBlock.class)
-public abstract class CraftingTableBlockMixin extends Block implements ITileEntityProvider {
+public abstract class CraftingTableBlockMixin extends Block implements ITileEntityProvider, IWorkbenchTileEntityProvider {
+
+    private int hasWorkbenchTileEntity = -1;
 
     public CraftingTableBlockMixin(Properties p_i48440_1_) {
 
         super(p_i48440_1_);
+    }
+
+    @Override
+    public boolean hasWorkbenchTileEntity() {
+
+        if (this.hasWorkbenchTileEntity == -1) {
+
+            try {
+
+                TileEntity tileEntity = this.createTileEntity(null, null);
+                this.hasWorkbenchTileEntity = tileEntity instanceof WorkbenchTileEntity ? 1 : 0;
+            } catch (NullPointerException ignored) {
+
+                // method must be overridden, most likely due to an own tile entity, so we don't do anything
+                this.hasWorkbenchTileEntity = 0;
+            }
+        }
+
+        return this.hasWorkbenchTileEntity == 1;
     }
 
     @Override
@@ -40,6 +62,12 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
 
     @Override
     public void setPlacedBy(World world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
+
+        if (!this.hasWorkbenchTileEntity()) {
+
+            super.setPlacedBy(world, pos, state, placer, stack);
+            return;
+        }
 
         if (stack.hasCustomHoverName()) {
 
@@ -53,6 +81,12 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
 
     @Override
     public void onRemove(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving) {
+
+        if (!this.hasWorkbenchTileEntity()) {
+
+            super.onRemove(state, world, pos, newState, isMoving);
+            return;
+        }
 
         if (!state.is(newState.getBlock())) {
 
@@ -69,6 +103,11 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
     @Override
     public boolean triggerEvent(BlockState state, World world, BlockPos pos, int id, int param) {
 
+        if (!this.hasWorkbenchTileEntity()) {
+
+            return super.triggerEvent(state, world, pos, id, param);
+        }
+
         super.triggerEvent(state, world, pos, id, param);
         TileEntity tileentity = world.getBlockEntity(pos);
         return tileentity != null && tileentity.triggerEvent(id, param);
@@ -77,27 +116,33 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit, CallbackInfoReturnable<ActionResultType> callbackInfo) {
 
-        if (world.isClientSide) {
+        if (this.hasWorkbenchTileEntity()) {
 
-            callbackInfo.setReturnValue(ActionResultType.SUCCESS);
-        } else {
+            if (world.isClientSide) {
 
-            TileEntity tileentity = world.getBlockEntity(pos);
-            if (tileentity instanceof WorkbenchTileEntity) {
+                callbackInfo.setReturnValue(ActionResultType.SUCCESS);
+            } else {
 
-                player.openMenu((WorkbenchTileEntity) tileentity);
-                player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+                TileEntity tileentity = world.getBlockEntity(pos);
+                if (tileentity instanceof WorkbenchTileEntity) {
+
+                    player.openMenu((WorkbenchTileEntity) tileentity);
+                    player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+                }
+
+                callbackInfo.setReturnValue(ActionResultType.CONSUME);
             }
-
-            callbackInfo.setReturnValue(ActionResultType.CONSUME);
         }
     }
 
     @Inject(method = "getMenuProvider", at = @At("HEAD"), cancellable = true)
     public void getMenuProvider(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<INamedContainerProvider> callbackInfo) {
 
-        TileEntity tileentity = world.getBlockEntity(pos);
-        callbackInfo.setReturnValue(tileentity instanceof INamedContainerProvider ? (INamedContainerProvider) tileentity : null);
+        if (this.hasWorkbenchTileEntity()) {
+
+            TileEntity tileentity = world.getBlockEntity(pos);
+            callbackInfo.setReturnValue(tileentity instanceof INamedContainerProvider ? (INamedContainerProvider) tileentity : null);
+        }
     }
 
 }

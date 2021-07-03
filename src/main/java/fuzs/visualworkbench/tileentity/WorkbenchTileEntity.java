@@ -27,9 +27,16 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
 
     private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
 
-    public int ticks;
-    public double playerAngle;
     public int combinedLight;
+    public int ticks;
+    public float currentAngle;
+    public float nextAngle;
+    private byte sector;
+    private boolean animating;
+    private float animationAngleStart;
+    private float animationAngleEnd;
+    private double startTicks;
+    private double playerAngle;
 
     @SuppressWarnings("ConstantConditions")
     public WorkbenchTileEntity() {
@@ -174,6 +181,15 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
             return;
         }
 
+        // renderer checks inside of this block where lighting will be 0, so we instead check above
+        this.combinedLight = this.getLevel() != null ? getLightColor(this.getLevel(), this.getBlockPos().above()) : 15728880;
+        if (this.combinedLight == 0) {
+
+            // don't render when a block is above the workbench
+            return;
+        }
+
+        ++this.ticks;
         PlayerEntity playerentity = this.level.getNearestPlayer((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D, 3.0D, false);
         if (playerentity != null) {
 
@@ -182,16 +198,64 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
             this.playerAngle = (Math.atan2(-d0, -d1) + 3.9269908169872414D) % 6.283185307179586D;
         }
 
-        // renderer checks inside of this block where lighting will be 0, so we instead check above
-        this.combinedLight = this.getLevel() != null ? getLightColor(this.getLevel(), this.getBlockPos().above()) : 15728880;
-        ++this.ticks;
+        // most of this code is taken from the old RealBench mod (https://www.curseforge.com/minecraft/mc-mods/realbench)
+        byte sector = (byte) ((int) (this.playerAngle * 2.0 / Math.PI));
+        if (this.sector != sector) {
+
+            this.animating = true;
+            this.animationAngleStart = this.currentAngle;
+            float delta1 = (float) sector * 90.0F - this.currentAngle;
+            float abs1 = Math.abs(delta1);
+            float delta2 = delta1 + 360.0F;
+            float shift = Math.abs(delta2);
+            float delta3 = delta1 - 360.0F;
+            float abs3 = Math.abs(delta3);
+            if (abs3 < abs1 && abs3 < shift) {
+
+                this.animationAngleEnd = delta3 + this.currentAngle;
+            } else if (shift < abs1 && shift < abs3) {
+
+                this.animationAngleEnd = delta2 + this.currentAngle;
+            } else {
+
+                this.animationAngleEnd = delta1 + this.currentAngle;
+            }
+
+            this.startTicks = this.ticks;
+            this.sector = sector;
+        }
+
+        if (this.animating) {
+
+            if (this.ticks >= this.startTicks + 20) {
+
+                this.animating = false;
+                this.currentAngle = this.nextAngle = (this.animationAngleEnd + 360.0F) % 360.0F;
+            } else {
+
+                this.currentAngle = (easeOutQuad(this.ticks - this.startTicks, this.animationAngleStart, this.animationAngleEnd - this.animationAngleStart, 20.0) + 360.0F) % 360.0F;
+                this.nextAngle = (easeOutQuad(Math.min(this.ticks + 1 - this.startTicks, 20), this.animationAngleStart, this.animationAngleEnd - this.animationAngleStart, 20.0) + 360.0F) % 360.0F;
+            }
+        }
     }
 
+    private static float easeOutQuad(double t, float b, float c, double d) {
+
+        float z = (float) t / (float) d;
+        return -c * z * (z - 2.0F) + b;
+    }
+
+    /**
+     * from {@link net.minecraft.client.renderer.WorldRenderer#getLightColor}
+     */
     public static int getLightColor(IBlockDisplayReader displayReader, BlockPos pos) {
 
         return getLightColor(displayReader, displayReader.getBlockState(pos), pos);
     }
 
+    /**
+     * from {@link net.minecraft.client.renderer.WorldRenderer#getLightColor}
+     */
     public static int getLightColor(IBlockDisplayReader displayReader, BlockState state, BlockPos pos) {
 
         if (state.emissiveRendering(displayReader, pos)) {
