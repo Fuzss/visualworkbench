@@ -19,7 +19,7 @@ public class VisualWorkbench {
 
     public VisualWorkbench() {
 
-        PuzzlesLib.setup(true);
+        PuzzlesLib.setup(false);
     }
 
 }

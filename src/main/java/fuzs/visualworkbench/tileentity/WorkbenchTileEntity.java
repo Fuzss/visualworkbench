@@ -131,13 +131,27 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
     @Override
     public ItemStack removeItem(int index, int count) {
 
-        return ItemStackHelper.removeItem(this.items, index, count);
+        ItemStack itemStack = ItemStackHelper.removeItem(this.items, index, count);
+        if (!itemStack.isEmpty()) {
+
+            // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
+            this.setChanged();
+        }
+
+        return itemStack;
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
 
-        return ItemStackHelper.takeItem(this.items, index);
+        ItemStack itemStack = ItemStackHelper.takeItem(this.items, index);
+        if (!itemStack.isEmpty()) {
+
+            // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
+            this.setChanged();
+        }
+
+        return itemStack;
     }
 
     @Override
@@ -146,6 +160,8 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
         if (index >= 0 && index < this.items.size()) {
 
             this.items.set(index, stack);
+            // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
+            this.setChanged();
         }
     }
 
@@ -176,7 +192,7 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
     @Override
     public void tick() {
 
-        if (!this.hasLevel() || !this.level.isClientSide) {
+        if (!this.hasLevel() || !this.level.isClientSide || this.isEmpty()) {
 
             return;
         }

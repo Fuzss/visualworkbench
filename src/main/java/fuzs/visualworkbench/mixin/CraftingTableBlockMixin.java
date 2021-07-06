@@ -1,6 +1,7 @@
 package fuzs.visualworkbench.mixin;
 
 import fuzs.visualworkbench.block.IWorkbenchTileEntityProvider;
+import fuzs.visualworkbench.element.VisualWorkbenchElement;
 import fuzs.visualworkbench.tileentity.WorkbenchTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -51,7 +52,19 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
             }
         }
 
-        return this.hasWorkbenchTileEntity == 1;
+        if (this.hasWorkbenchTileEntity == 1) {
+
+            try {
+
+                return !this.is(VisualWorkbenchElement.NON_VISUAL_WORKBENCHES_TAG);
+            } catch (IllegalStateException ignored) {
+
+                // tag will throw an exception when not fetched yet before a world is loaded
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override
