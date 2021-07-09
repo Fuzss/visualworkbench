@@ -42,12 +42,20 @@ public class VisualWorkbenchElement extends ClientExtensibleElement<VisualWorkbe
     @Override
     public void setupCommon() {
 
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::onRegistryRegister);
-        PuzzlesLib.getRegistryManager().register("crafting", new ContainerType<>(VisualWorkbenchContainer::new));
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(ContainerType.class, this::onRegistryRegisterContainerType);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::onRegistryRegisterTileEntityType);
+//        PuzzlesLib.getRegistryManager().register("crafting", new ContainerType<>(VisualWorkbenchContainer::new));
+    }
+
+    private void onRegistryRegisterContainerType(final RegistryEvent.Register<ContainerType<?>> evt) {
+
+        ContainerType<VisualWorkbenchContainer> containerType = new ContainerType<>(VisualWorkbenchContainer::new);
+        containerType.setRegistryName(new ResourceLocation(VisualWorkbench.MODID, "crafting"));
+        evt.getRegistry().register(containerType);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void onRegistryRegister(final RegistryEvent.Register<TileEntityType<?>> evt) {
+    private void onRegistryRegisterTileEntityType(final RegistryEvent.Register<TileEntityType<?>> evt) {
 
         // blocks are registered first, so this works for modded crafting tables
         TileEntityType<WorkbenchTileEntity> tileEntityType = TileEntityType.Builder.of(WorkbenchTileEntity::new, ForgeRegistries.BLOCKS.getValues().stream()

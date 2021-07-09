@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v1.0.2-1.16.5] - 2021-07-09
+#Fixed
+- Temporarily fixed crafting screen not opening sometimes
+
 ## [v1.0.1-1.16.5] - 2021-07-07
 #Added
 - Added `visualworkbench:non_visual_workbenches` block tag for blacklisting certain crafting tables 
