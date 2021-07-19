@@ -2,7 +2,7 @@ package fuzs.visualworkbench.inventory.container;
 
 import fuzs.visualworkbench.element.VisualWorkbenchElement;
 import fuzs.visualworkbench.inventory.CraftingInventoryWrapper;
-import fuzs.visualworkbench.mixin.accessor.IWorkbenchContainerAccessor;
+import fuzs.visualworkbench.mixin.accessor.WorkbenchContainerAccessor;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -28,7 +28,7 @@ public class VisualWorkbenchContainer extends WorkbenchContainer {
         // clearing lastSlots as well is not necessary, the slots that are added now will simply remain unused
         this.slots.clear();
         CraftingInventory craftingInventory = new CraftingInventoryWrapper(tileEntity, this, 3, 3);
-        this.addSlot(new CraftingResultSlot(playerInventory.player, craftingInventory, ((IWorkbenchContainerAccessor) this).getResultSlots(), 0, 124, 35));
+        this.addSlot(new CraftingResultSlot(playerInventory.player, craftingInventory, ((WorkbenchContainerAccessor) this).getResultSlots(), 0, 124, 35));
 
         for (int i = 0; i < 3; ++i) {
 
@@ -51,7 +51,7 @@ public class VisualWorkbenchContainer extends WorkbenchContainer {
             this.addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
         }
 
-        ((IWorkbenchContainerAccessor) this).setCraftSlots(craftingInventory);
+        ((WorkbenchContainerAccessor) this).setCraftSlots(craftingInventory);
         // update result slot if a valid recipe is already present
         this.slotsChanged(craftingInventory);
     }
@@ -65,7 +65,7 @@ public class VisualWorkbenchContainer extends WorkbenchContainer {
     @Override
     public boolean stillValid(PlayerEntity player) {
 
-        return ((IWorkbenchContainerAccessor) this).getCraftSlots().stillValid(player);
+        return ((WorkbenchContainerAccessor) this).getCraftSlots().stillValid(player);
     }
 
     @Override

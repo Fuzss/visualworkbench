@@ -3,14 +3,20 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v1.0.3-1.16.5] - 2021-07-19
+### Added
+- Added config option for workbench contents to lay flat on the table instead of floating above
+### Changed
+- Updated [Puzzles Lib] to v1.0.8
+
 ## [v1.0.2-1.16.5] - 2021-07-09
-#Fixed
+### Fixed
 - Temporarily fixed crafting screen not opening sometimes
 
 ## [v1.0.1-1.16.5] - 2021-07-07
-#Added
+### Added
 - Added `visualworkbench:non_visual_workbenches` block tag for blacklisting certain crafting tables 
-#Fixed
+### Fixed
 - Fixed useless config file being generated
 - Rendering updates properly when using Crafting Tweaks mod
 
