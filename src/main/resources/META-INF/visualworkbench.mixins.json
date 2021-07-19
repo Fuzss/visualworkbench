@@ -6,7 +6,7 @@
   "refmap": "visualworkbench.refmap.json",
   "mixins": [
     "CraftingTableBlockMixin",
-    "accessor.IWorkbenchContainerAccessor"
+    "accessor.WorkbenchContainerAccessor"
   ],
   "client": [
   ],

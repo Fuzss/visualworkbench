@@ -13,8 +13,6 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ObjectHolder;
 
@@ -24,7 +22,6 @@ public class VisualWorkbenchElement extends ClientExtensibleElement<VisualWorkbe
 
     @ObjectHolder(VisualWorkbench.MODID + ":" + "crafting_table")
     public static final TileEntityType<WorkbenchTileEntity> WORKBENCH_TILE_ENTITY = null;
-
     @ObjectHolder(VisualWorkbench.MODID + ":" + "crafting")
     public static final ContainerType<VisualWorkbenchContainer> CRAFTING_CONTAINER = null;
 
@@ -40,22 +37,20 @@ public class VisualWorkbenchElement extends ClientExtensibleElement<VisualWorkbe
     }
 
     @Override
-    public void setupCommon() {
+    protected boolean isPersistent() {
 
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(TileEntityType.class, this::onRegistryRegister);
-        PuzzlesLib.getRegistryManager().register("crafting", new ContainerType<>(VisualWorkbenchContainer::new));
+        return true;
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void onRegistryRegister(final RegistryEvent.Register<TileEntityType<?>> evt) {
+    @Override
+    public void constructCommon() {
 
         // blocks are registered first, so this works for modded crafting tables
-        TileEntityType<WorkbenchTileEntity> tileEntityType = TileEntityType.Builder.of(WorkbenchTileEntity::new, ForgeRegistries.BLOCKS.getValues().stream()
+        PuzzlesLib.getRegistryManager().registerTileEntityType("crafting_table", () -> TileEntityType.Builder.of(WorkbenchTileEntity::new, ForgeRegistries.BLOCKS.getValues().stream()
                 .filter(block -> block instanceof IWorkbenchTileEntityProvider && ((IWorkbenchTileEntityProvider) block).hasWorkbenchTileEntity())
-                .toArray(Block[]::new)).build(null);
-
-        tileEntityType.setRegistryName(new ResourceLocation(VisualWorkbench.MODID, "crafting_table"));
-        evt.getRegistry().register(tileEntityType);
+                .toArray(Block[]::new)).build(null));
+        PuzzlesLib.getRegistryManager().registerContainerType("crafting", () -> new ContainerType<>(VisualWorkbenchContainer::new));
     }
 
 }

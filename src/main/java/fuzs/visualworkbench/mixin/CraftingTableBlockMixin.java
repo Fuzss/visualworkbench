@@ -6,7 +6,6 @@ import fuzs.visualworkbench.tileentity.WorkbenchTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
@@ -25,9 +24,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import javax.annotation.Nullable;
+
 @SuppressWarnings({"deprecation", "unused"})
 @Mixin(CraftingTableBlock.class)
-public abstract class CraftingTableBlockMixin extends Block implements ITileEntityProvider, IWorkbenchTileEntityProvider {
+public abstract class CraftingTableBlockMixin extends Block implements IWorkbenchTileEntityProvider {
 
     private int hasWorkbenchTileEntity = -1;
 
@@ -41,34 +42,48 @@ public abstract class CraftingTableBlockMixin extends Block implements ITileEnti
 
         if (this.hasWorkbenchTileEntity == -1) {
 
-            try {
-
-                TileEntity tileEntity = this.createTileEntity(null, null);
-                this.hasWorkbenchTileEntity = tileEntity instanceof WorkbenchTileEntity ? 1 : 0;
-            } catch (NullPointerException ignored) {
-
-                // method must be overridden, most likely due to an own tile entity, so we don't do anything
-                this.hasWorkbenchTileEntity = 0;
-            }
+            this.hasWorkbenchTileEntity = this.findWorkbenchTileEntity() ? 1 : 0;
         }
 
-        if (this.hasWorkbenchTileEntity == 1) {
+        if (this.hasWorkbenchTileEntity == 0) {
 
-            try {
+            return false;
+        }
 
-                return !this.is(VisualWorkbenchElement.NON_VISUAL_WORKBENCHES_TAG);
-            } catch (IllegalStateException ignored) {
+        try {
 
-                // tag will throw an exception when not fetched yet before a world is loaded
-                return true;
-            }
+            return !this.is(VisualWorkbenchElement.NON_VISUAL_WORKBENCHES_TAG);
+        } catch (IllegalStateException ignored) {
+
+            // tag will throw an exception when not fetched yet before a world is loaded
+        }
+
+        return true;
+    }
+
+    private boolean findWorkbenchTileEntity() {
+
+        try {
+
+            TileEntity tileEntity = this.createTileEntity(null, null);
+            return tileEntity instanceof WorkbenchTileEntity;
+        } catch (NullPointerException ignored) {
+
+            // method must be overridden, most likely due to an own tile entity, so we don't do anything
         }
 
         return false;
     }
 
     @Override
-    public TileEntity newBlockEntity(IBlockReader world) {
+    public boolean hasTileEntity(BlockState state) {
+
+        return this.hasWorkbenchTileEntity();
+    }
+
+    @Nullable
+    @Override
+    public TileEntity createTileEntity(BlockState state, IBlockReader world) {
 
         return new WorkbenchTileEntity();
     }

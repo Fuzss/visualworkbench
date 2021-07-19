@@ -95,6 +95,7 @@ dependencies {
     // try use curse maven when local maven is not available
     // file id is end of url (7 digits usually) when on file details page on curse
 //    compile fg.deobf("curse.maven:puzzles-lib:<file-id>")
+    runtime fg.deobf("curse.maven:crafting-tweaks:3330406")
 }
 
 mixin {
