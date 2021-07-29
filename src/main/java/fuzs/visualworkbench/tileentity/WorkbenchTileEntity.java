@@ -85,7 +85,7 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
     }
 
     @Override
-    public void onDataPacket(NetworkManager networkManager, SUpdateTileEntityPacket updatePacket){
+    public void onDataPacket(NetworkManager networkManager, SUpdateTileEntityPacket updatePacket) {
 
         CompoundNBT compound = updatePacket.getTag();
         this.clearContent();

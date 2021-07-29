@@ -34,7 +34,7 @@ public class WorkbenchTileEntityRenderer extends TileEntityRenderer<WorkbenchTil
         }
 
         VisualWorkbenchElement element = (VisualWorkbenchElement) VisualWorkbench.VISUAL_WORKBENCH;
-        for(int i = 0; i < tileEntityIn.getContainerSize(); ++i) {
+        for (int i = 0; i < tileEntityIn.getContainerSize(); ++i) {
 
             ItemStack itemStack = tileEntityIn.getItem(i);
             if (itemStack != ItemStack.EMPTY) {
