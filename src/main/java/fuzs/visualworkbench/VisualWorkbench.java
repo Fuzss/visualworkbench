@@ -1,21 +1,29 @@
 package fuzs.visualworkbench;
 
-import fuzs.puzzleslib.PuzzlesLib;
-import fuzs.puzzleslib.element.AbstractElement;
-import fuzs.visualworkbench.element.VisualWorkbenchElement;
+import fuzs.puzzleslib.config.ConfigHolder;
+import fuzs.puzzleslib.config.ConfigHolderImpl;
+import fuzs.visualworkbench.config.ClientConfig;
+import fuzs.visualworkbench.config.ServerConfig;
+import fuzs.visualworkbench.registry.ModRegistry;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(VisualWorkbench.MODID)
+@Mod(VisualWorkbench.MOD_ID)
+@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class VisualWorkbench {
-    public static final String MODID = "visualworkbench";
-    public static final String NAME = "Visual Workbench";
-    public static final Logger LOGGER = LogManager.getLogger(NAME);
+    public static final String MOD_ID = "visualworkbench";
+    public static final String MOD_NAME = "Visual Workbench";
+    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
-    public static final AbstractElement VISUAL_WORKBENCH = PuzzlesLib.create(MODID).register("visual_workbench", VisualWorkbenchElement::new);
+    @SuppressWarnings("Convert2MethodRef")
+    public static final ConfigHolder<ClientConfig, ServerConfig> CONFIG = ConfigHolder.of(() -> new ClientConfig(), () -> new ServerConfig());
 
-    public VisualWorkbench() {
-        PuzzlesLib.setup(true);
+    @SubscribeEvent
+    public static void onConstructMod(final FMLConstructModEvent evt) {
+        ((ConfigHolderImpl<?, ?>) CONFIG).addConfigs(MOD_ID);
+        ModRegistry.touch();
     }
 }

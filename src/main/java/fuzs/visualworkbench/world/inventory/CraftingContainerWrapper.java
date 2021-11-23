@@ -1,16 +1,16 @@
-package fuzs.visualworkbench.inventory;
+package fuzs.visualworkbench.world.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
 
-public class CraftingInventoryWrapper extends CraftingInventory {
-    private final IInventory inventory;
+public class CraftingContainerWrapper extends CraftingContainer {
+    private final Container inventory;
 
-    public CraftingInventoryWrapper(IInventory inventory, Container eventHandler, int width, int height) {
+    public CraftingContainerWrapper(Container inventory, AbstractContainerMenu eventHandler, int width, int height) {
         super(eventHandler, width, height);
         this.inventory = inventory;
         if (width * height != this.getContainerSize()) throw new IllegalArgumentException("Wrong crafting inventory dimensions!");
@@ -56,7 +56,7 @@ public class CraftingInventoryWrapper extends CraftingInventory {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return this.inventory.stillValid(player);
     }
 
@@ -66,7 +66,7 @@ public class CraftingInventoryWrapper extends CraftingInventory {
     }
 
     @Override
-    public void fillStackedContents(RecipeItemHelper helper) {
+    public void fillStackedContents(StackedContents helper) {
         for (int i = 0; i < this.getContainerSize(); i++) {
             helper.accountSimpleStack(this.getItem(i));
         }
