@@ -45,8 +45,6 @@ public abstract class CraftingTableBlockMixin extends Block implements EntityBlo
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         if (this.withCraftingBlockEntity()) {
-            VisualWorkbench.LOGGER.info("config {}", VisualWorkbench.CONFIG.server().workbenchBlacklist.contains(this));
-            VisualWorkbench.LOGGER.info("tag {}", ModRegistry.NON_VISUAL_WORKBENCHES_TAG.contains(this));
             return new CraftingTableBlockEntity(pPos, pState);
         }
         return null;
