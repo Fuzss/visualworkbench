@@ -165,10 +165,6 @@ public class WorkbenchTileEntity extends LockableTileEntity implements ITickable
         }
         // renderer checks inside this block where lighting will be 0, so we instead check above
         this.combinedLight = this.getLevel() != null ? getLightColor(this.getLevel(), this.getBlockPos().above()) : 15728880;
-        if (this.combinedLight == 0) {
-            // don't render when a block is above the workbench
-            return;
-        }
         ++this.ticks;
         PlayerEntity playerentity = this.level.getNearestPlayer((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D, 3.0D, false);
         if (playerentity != null) {
