@@ -18,33 +18,26 @@ import javax.annotation.Nonnull;
 /**
  * mostly copied from https://github.com/Tfarcenim/crafting-station
  */
-@SuppressWarnings("unused")
 @JeiPlugin
 public class JEIPlugin implements IModPlugin, IGuiContainerHandler<CraftingScreen> {
-
     @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
-
-        return new ResourceLocation(VisualWorkbench.MODID, VisualWorkbench.MODID);
+        return new ResourceLocation(VisualWorkbench.MODID, "crafting");
     }
 
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
-
         registration.addRecipeTransferHandler(new WorkbenchTransferInfo());
     }
 
     @Override
     public void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-
         registration.addRecipeCatalyst(new ItemStack(Items.CRAFTING_TABLE), VanillaRecipeCategoryUid.CRAFTING);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-
         registration.addGuiContainerHandler(CraftingScreen.class,this);
     }
-
 }

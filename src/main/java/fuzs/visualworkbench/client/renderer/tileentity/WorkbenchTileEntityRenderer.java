@@ -16,23 +16,14 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Vector3f;
 
 public class WorkbenchTileEntityRenderer extends TileEntityRenderer<WorkbenchTileEntity> {
-
     private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
     public WorkbenchTileEntityRenderer(TileEntityRendererDispatcher tileEntityRendererDispatcher) {
-
         super(tileEntityRendererDispatcher);
     }
 
     @Override
     public void render(WorkbenchTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn) {
-
-        // there is a block above this workbench
-        if (tileEntityIn.combinedLight == 0) {
-
-            return;
-        }
-
         VisualWorkbenchElement element = (VisualWorkbenchElement) VisualWorkbench.VISUAL_WORKBENCH;
         for (int i = 0; i < tileEntityIn.getContainerSize(); ++i) {
 
