@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v1.0.5-1.16.5] - 2021-11-23
+### Fixed
+- Fixed crash when using together with FastWorkbench
+
 ## [v1.0.4-1.16.5] - 2021-11-23
 ### Added
 - Added server config option for blacklisting workbenches from having any changes from this mod applied (it's the same as the block tag this mod adds, but more accessible for users)
