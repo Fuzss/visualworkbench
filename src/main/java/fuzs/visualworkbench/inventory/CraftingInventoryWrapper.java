@@ -9,10 +9,12 @@ import net.minecraft.item.crafting.RecipeItemHelper;
 
 public class CraftingInventoryWrapper extends CraftingInventory {
     private final IInventory inventory;
+    private final Container menu;
 
     public CraftingInventoryWrapper(IInventory inventory, Container eventHandler, int width, int height) {
         super(eventHandler, width, height);
         this.inventory = inventory;
+        this.menu = eventHandler;
         if (width * height != this.getContainerSize()) throw new IllegalArgumentException("Wrong crafting inventory dimensions!");
     }
 
@@ -38,16 +40,17 @@ public class CraftingInventoryWrapper extends CraftingInventory {
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        // usually crafting inventory calls slotsChanged on the menu here, we don't need that as we use a container listener instead of the method
-        // this is needed to be able to respond to changes made by other players
-        return this.inventory.removeItem(index, count);
+        ItemStack itemstack = this.inventory.removeItem(index, count);
+        if (!itemstack.isEmpty()) {
+            this.menu.slotsChanged(this);
+        }
+        return itemstack;
     }
 
     @Override
     public void setItem(int index, ItemStack stack) {
-        // usually crafting inventory calls slotsChanged on the menu here, we don't need that as we use a container listener instead of the method
-        // this is needed to be able to respond to changes made by other players
         this.inventory.setItem(index, stack);
+        this.menu.slotsChanged(this);
     }
 
     @Override
