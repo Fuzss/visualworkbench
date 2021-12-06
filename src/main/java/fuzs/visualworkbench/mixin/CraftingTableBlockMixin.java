@@ -1,8 +1,7 @@
 package fuzs.visualworkbench.mixin;
 
-import fuzs.visualworkbench.VisualWorkbench;
+import fuzs.visualworkbench.config.JsonConfigBuilder;
 import fuzs.visualworkbench.registry.ModRegistry;
-import fuzs.visualworkbench.world.level.block.CraftingBlockEntityProvider;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.stats.Stats;
@@ -31,20 +30,15 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings("deprecation")
 @Mixin(CraftingTableBlock.class)
-public abstract class CraftingTableBlockMixin extends Block implements EntityBlock, CraftingBlockEntityProvider {
+public abstract class CraftingTableBlockMixin extends Block implements EntityBlock {
     public CraftingTableBlockMixin(Properties p_i48440_1_) {
         super(p_i48440_1_);
-    }
-
-    @Override
-    public boolean withCraftingBlockEntity() {
-        return !VisualWorkbench.CONFIG.server().workbenchBlacklist.contains(this) && !ModRegistry.NON_VISUAL_WORKBENCHES_TAG.contains(this);
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
-        if (this.withCraftingBlockEntity()) {
+        if (JsonConfigBuilder.INSTANCE.contains(this)) {
             return new CraftingTableBlockEntity(pPos, pState);
         }
         return null;
@@ -63,50 +57,42 @@ public abstract class CraftingTableBlockMixin extends Block implements EntityBlo
 
     @Override
     public void setPlacedBy(Level world, BlockPos pos, BlockState state, LivingEntity placer, ItemStack stack) {
-        if (!this.withCraftingBlockEntity()) {
-            super.setPlacedBy(world, pos, state, placer, stack);
-            return;
-        }
-        if (stack.hasCustomHoverName()) {
-            if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity tileentity) {
-                tileentity.setCustomName(stack.getHoverName());
+        if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
+            if (stack.hasCustomHoverName()) {
+                blockEntity.setCustomName(stack.getHoverName());
             }
+        } else {
+            super.setPlacedBy(world, pos, state, placer, stack);
         }
     }
 
     @Override
     public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!this.withCraftingBlockEntity()) {
-            super.onRemove(state, world, pos, newState, isMoving);
-            return;
-        }
         if (!state.is(newState.getBlock())) {
-            if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity tileentity) {
-                Containers.dropContents(world, pos, tileentity);
+            if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
+                Containers.dropContents(world, pos, blockEntity);
             }
-            super.onRemove(state, world, pos, newState, isMoving);
         }
+        super.onRemove(state, world, pos, newState, isMoving);
     }
 
     @Override
     public boolean triggerEvent(BlockState state, Level world, BlockPos pos, int id, int param) {
-        if (!this.withCraftingBlockEntity()) {
-            return super.triggerEvent(state, world, pos, id, param);
+        final boolean result = super.triggerEvent(state, world, pos, id, param);
+        if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
+            return blockEntity.triggerEvent(id, param);
         }
-        super.triggerEvent(state, world, pos, id, param);
-        return world.getBlockEntity(pos) instanceof CraftingTableBlockEntity tileentity && tileentity.triggerEvent(id, param);
+        return result;
     }
 
     @Inject(method = "use", at = @At("HEAD"), cancellable = true)
     public void use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> callbackInfo) {
-        if (this.withCraftingBlockEntity()) {
+        if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
             if (world.isClientSide) {
                 callbackInfo.setReturnValue(InteractionResult.SUCCESS);
             } else {
-                if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity tileentity) {
-                    player.openMenu(tileentity);
-                    player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
-                }
+                player.openMenu(blockEntity);
+                player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
                 callbackInfo.setReturnValue(InteractionResult.CONSUME);
             }
         }
@@ -114,10 +100,8 @@ public abstract class CraftingTableBlockMixin extends Block implements EntityBlo
 
     @Inject(method = "getMenuProvider", at = @At("HEAD"), cancellable = true)
     public void getMenuProvider(BlockState state, Level world, BlockPos pos, CallbackInfoReturnable<MenuProvider> callbackInfo) {
-        if (this.withCraftingBlockEntity()) {
-            if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity tileentity) {
-                callbackInfo.setReturnValue(tileentity);
-            }
+        if (world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
+            callbackInfo.setReturnValue(blockEntity);
         }
     }
 }
