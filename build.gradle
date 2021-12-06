@@ -17,7 +17,6 @@ buildscript {
 
 plugins {
 
-    id "com.wynprice.cursemaven" version "2.1.5"
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
@@ -68,6 +67,7 @@ minecraft {
 repositories {
 
     mavenLocal()
+    maven { url = "https://cursemaven.com" }
     maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
@@ -89,13 +89,14 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.0.107:api")
     // at runtime, use the full JEI jar
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.7.0.107")
+    runtimeOnly fg.deobf("curse.maven:craftingtweaks-233071:3330406")
+    runtimeOnly fg.deobf("curse.maven:blocksplus-473206:3309129")
 
     // local maven
     compile "fuzs.puzzleslib:PuzzlesLib:${puzzles_version}"
     // try use curse maven when local maven is not available
     // file id is end of url (7 digits usually) when on file details page on curse
 //    compile fg.deobf("curse.maven:puzzles-lib:<file-id>")
-    runtime fg.deobf("curse.maven:crafting-tweaks:3330406")
 }
 
 mixin {

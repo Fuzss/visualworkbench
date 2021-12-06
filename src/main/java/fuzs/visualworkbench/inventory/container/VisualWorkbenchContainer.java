@@ -34,7 +34,14 @@ public class VisualWorkbenchContainer extends WorkbenchContainer implements ICon
         this.access = access;
         this.player = playerInventory.player;
         ((WorkbenchContainerAccessor) this).setCraftSlots(this.craftSlots);
-        this.slots.set(0, PuzzlesUtil.make(new CraftingResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35), slot -> slot.index = 0));
+        this.slots.set(0, PuzzlesUtil.make(new CraftingResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35) {
+            @Override
+            public void set(ItemStack p_75215_1_) {
+                // fast workbench makes this do nothing (via mixin), but in our case it is needed to avoid client desync
+                this.container.setItem(this.getSlotIndex(), p_75215_1_);
+                this.setChanged();
+            }
+        }, slot -> slot.index = 0));
         for (int i = 0; i < 3; ++i) {
             for (int j = 0; j < 3; ++j) {
                 final int slotIndex = j + i * 3;
