@@ -5,7 +5,6 @@ import fuzs.visualworkbench.world.inventory.ModCraftingMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -24,7 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
-    private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     public int combinedLight;
     public int ticks;
     public float currentAngle;
@@ -46,39 +45,27 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag compound) {
-        super.load(compound);
-        this.clearContent();
-        ContainerHelper.loadAllItems(compound, this.items);
+    public void load(CompoundTag nbt) {
+        super.load(nbt);
+        this.inventory.clear();
+        ContainerHelper.loadAllItems(nbt, this.inventory);
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
-        return this.saveMetadataAndItems(compound);
+    protected void saveAdditional(CompoundTag compoundTag) {
+        super.saveAdditional(compoundTag);
+        ContainerHelper.saveAllItems(compoundTag, this.inventory, true);
     }
 
-    private CompoundTag saveMetadataAndItems(CompoundTag compound) {
-        super.save(compound);
-        ContainerHelper.saveAllItems(compound, this.items, true);
-        return compound;
-    }
-
+    @Override
     @Nullable
-    @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        return new ClientboundBlockEntityDataPacket(this.worldPosition, -1, this.getUpdateTag());
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
     @Override
     public CompoundTag getUpdateTag() {
-        return this.saveMetadataAndItems(new CompoundTag());
-    }
-
-    @Override
-    public void onDataPacket(Connection networkManager, ClientboundBlockEntityDataPacket updatePacket) {
-        CompoundTag compound = updatePacket.getTag();
-        this.clearContent();
-        ContainerHelper.loadAllItems(compound, this.items);
+        return this.saveWithoutMetadata();
     }
 
     @Override
@@ -91,12 +78,12 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public int getContainerSize() {
-        return this.items.size();
+        return this.inventory.size();
     }
 
     @Override
     public boolean isEmpty() {
-        for (ItemStack itemstack : this.items) {
+        for (ItemStack itemstack : this.inventory) {
             if (!itemstack.isEmpty()) {
                 return false;
             }
@@ -106,12 +93,12 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public ItemStack getItem(int index) {
-        return index >= 0 && index < this.items.size() ? this.items.get(index) : ItemStack.EMPTY;
+        return index >= 0 && index < this.inventory.size() ? this.inventory.get(index) : ItemStack.EMPTY;
     }
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        ItemStack itemStack = ContainerHelper.removeItem(this.items, index, count);
+        ItemStack itemStack = ContainerHelper.removeItem(this.inventory, index, count);
         if (!itemStack.isEmpty()) {
             // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
             this.setChanged();
@@ -121,7 +108,7 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        ItemStack itemStack = ContainerHelper.takeItem(this.items, index);
+        ItemStack itemStack = ContainerHelper.takeItem(this.inventory, index);
         if (!itemStack.isEmpty()) {
             // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
             this.setChanged();
@@ -131,8 +118,8 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public void setItem(int index, ItemStack stack) {
-        if (index >= 0 && index < this.items.size()) {
-            this.items.set(index, stack);
+        if (index >= 0 && index < this.inventory.size()) {
+            this.inventory.set(index, stack);
             // vanilla is fine, but crafting tweaks mod doesn't update the client properly without this
             this.setChanged();
         }
@@ -154,7 +141,7 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public void clearContent() {
-        this.items.clear();
+        this.inventory.clear();
     }
 
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, CraftingTableBlockEntity pBlockEntity) {

@@ -8,7 +8,7 @@ import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 public class ModRegistry {
     private static final RegistryManager REGISTRY = RegistryManager.of(VisualWorkbench.MOD_ID);
