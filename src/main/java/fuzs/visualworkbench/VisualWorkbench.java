@@ -8,17 +8,16 @@ import fuzs.visualworkbench.config.JsonConfigBuilder;
 import fuzs.visualworkbench.registry.ModRegistry;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mod(VisualWorkbench.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class VisualWorkbench {
     public static final String MOD_ID = "visualworkbench";
     public static final String MOD_NAME = "Visual Workbench";
-    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     @SuppressWarnings("Convert2MethodRef")
     public static final ConfigHolder<ClientConfig, AbstractConfig> CONFIG = ConfigHolder.client(() -> new ClientConfig());
