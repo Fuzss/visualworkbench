@@ -4,6 +4,7 @@ import fuzs.puzzleslib.util.PuzzlesUtil;
 import fuzs.visualworkbench.mixin.accessor.CraftingMenuAccessor;
 import fuzs.visualworkbench.registry.ModRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
@@ -18,17 +19,19 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
     private final ResultContainer resultSlots;
     private final ContainerLevelAccess access;
     private final Player player;
+    private final ContainerData containerData;
 
     public ModCraftingMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new SimpleContainer(9), ContainerLevelAccess.NULL);
+        this(id, playerInventory, new SimpleContainer(9), ContainerLevelAccess.NULL, new SimpleContainerData(1));
     }
 
-    public ModCraftingMenu(int id, Inventory playerInventory, Container tileInventory, ContainerLevelAccess access) {
+    public ModCraftingMenu(int id, Inventory playerInventory, Container tileInventory, ContainerLevelAccess access, ContainerData containerData) {
         super(id, playerInventory, access);
         this.craftSlots = new CraftingContainerWrapper(tileInventory, this, 3, 3);
         this.resultSlots = ((CraftingMenuAccessor) this).getResultSlots();
         this.access = access;
         this.player = playerInventory.player;
+        this.containerData = containerData;
         ((CraftingMenuAccessor) this).setCraftSlots(this.craftSlots);
         this.slots.set(0, PuzzlesUtil.make(new ResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35) {
             @Override
@@ -59,6 +62,7 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
     public void slotsChanged(Container pInventory) {
         this.access.execute((p_39386_, p_39387_) -> {
             slotChangedCraftingGrid(this, p_39386_, this.player, this.craftSlots, this.resultSlots);
+            this.containerData.set(0, Registry.ITEM.getId(this.resultSlots.getItem(0).getItem()));
         });
     }
 

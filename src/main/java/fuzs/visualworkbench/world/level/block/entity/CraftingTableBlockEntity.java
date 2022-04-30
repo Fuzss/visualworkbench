@@ -12,6 +12,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -23,7 +24,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import javax.annotation.Nullable;
 
 public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
+    private static final String LAST_RECIPE_ID_TAG = "LastRecipeId";
+
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
+    private int lastResultId;
     public int combinedLight;
     public int ticks;
     public float currentAngle;
@@ -34,6 +38,25 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     private float animationAngleEnd;
     private double startTicks;
     private double playerAngle;
+    private final ContainerData dataAccess = new ContainerData() {
+
+        @Override
+        public int get(int index) {
+            return index == 0 ? CraftingTableBlockEntity.this.getLastResultId() : 0;
+        }
+
+        @Override
+        public void set(int index, int value) {
+            if (index == 0) {
+                CraftingTableBlockEntity.this.setLastResultId(value);
+            }
+        }
+
+        @Override
+        public int getCount() {
+            return 1;
+        }
+    };
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState state) {
         super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.get(), pos, state);
@@ -45,16 +68,18 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
-    public void load(CompoundTag nbt) {
-        super.load(nbt);
+    public void load(CompoundTag tag) {
+        super.load(tag);
         this.inventory.clear();
-        ContainerHelper.loadAllItems(nbt, this.inventory);
+        ContainerHelper.loadAllItems(tag, this.inventory);
+        this.lastResultId = tag.getInt(LAST_RECIPE_ID_TAG);
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag) {
-        super.saveAdditional(compoundTag);
-        ContainerHelper.saveAllItems(compoundTag, this.inventory, true);
+    protected void saveAdditional(CompoundTag tag) {
+        super.saveAdditional(tag);
+        ContainerHelper.saveAllItems(tag, this.inventory, true);
+        tag.putInt(LAST_RECIPE_ID_TAG, this.lastResultId);
     }
 
     @Override
@@ -127,7 +152,7 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     public boolean stillValid(Player player) {
-        if (this.level.getBlockEntity(this.worldPosition) != this) {
+        if (this.getLevel().getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
             return !(player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) > 64.0D);
@@ -136,12 +161,21 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
 
     @Override
     protected AbstractContainerMenu createMenu(int id, Inventory playerInventory) {
-        return new ModCraftingMenu(id, playerInventory, this, ContainerLevelAccess.create(this.level, this.worldPosition));
+        return new ModCraftingMenu(id, playerInventory, this, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()), this.dataAccess);
     }
 
     @Override
     public void clearContent() {
         this.inventory.clear();
+    }
+
+    public int getLastResultId() {
+        return this.lastResultId;
+    }
+
+    private void setLastResultId(int lastResultId) {
+        this.lastResultId = lastResultId;
+        this.setChanged();
     }
 
     public static void tick(Level pLevel, BlockPos pPos, BlockState pState, CraftingTableBlockEntity pBlockEntity) {

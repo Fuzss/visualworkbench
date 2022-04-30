@@ -3,6 +3,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v3.3.0-1.18.2] - 2022-04-30
+### Added
+- Added rendering for recipe result item, can be disabled in the config
+### Fixed
+- Fixed log spam from the game trying to load invalid block entities
+
 ## [v3.2.0-1.18.2] - 2022-03-03
 - Compiled for Minecraft 1.18.2
 
