@@ -3,19 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
-## [v3.3.0-1.18.2] - 2022-04-30
+## [v4.0.0-1.19] - 2022-07-19
+- Ported to Minecraft 1.19
+- Split into multi-loader project
 ### Added
-- Added rendering for recipe result item, can be disabled in the config
+- Added JEI support on Fabric
+### Changed
+- Modded crafting tables that override opening the crafting menu can now be supported when added to the config (e.g. from the VariantCraftingTables mod)
 ### Fixed
-- Fixed log spam from the game trying to load invalid block entities
-
-## [v3.2.0-1.18.2] - 2022-03-03
-- Compiled for Minecraft 1.18.2
-
-## [v3.1.0-1.18.1] - 2021-12-17
-- Compiled for Minecraft 1.18.1
-
-## [v3.0.0-1.18] - 2021-12-06
-- Ported to Minecraft 1.18
+- Fixed the result preview showing a wrong item when said item has nbt data
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/

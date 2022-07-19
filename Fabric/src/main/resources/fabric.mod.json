@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "id": "${modId}",
+  "version": "${modVersion}",
+
+  "name": "${modName}",
+  "description": "${modDescription}",
+  "authors": [
+    "${modAuthor}"
+  ],
+  "contact": {
+    "homepage": "${modPageUrl}",
+    "issues": "${modIssueUrl}",
+    "sources": "${modPageUrl}"
+  },
+
+  "license": "MPL-2",
+  "icon": "mod_logo.png",
+
+  "environment": "${modFabricEnvironment}",
+  "entrypoints": {
+    "main": [
+      "${mainEntryPoint}"
+    ],
+    "client": [
+      "${clientEntryPoint}"
+    ],
+    "jei_mod_plugin": [
+      "${modGroup}.compat.jei.VisualWorkbenchJEIPlugin"
+    ]
+  },
+  "mixins": [
+    "${modId}.common.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=${minFabricVersion}",
+    "fabric": ">=${minFabricApiVersion}",
+    "puzzleslib": ">=${minPuzzlesVersion}",
+    "minecraft": ">=${minMinecraftVersion} <${nextMinecraftVersion}",
+    "java": ">=17"
+  }
+}
