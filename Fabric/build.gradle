@@ -47,23 +47,20 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabricApiVersion}"
 
     // Forge Configs
-    modImplementation "net.minecraftforge:forgeconfigapiport-fabric:4.0.0"
+    modImplementation "net.minecraftforge:forgeconfigapiport-fabric:4.1.2"
 
     // Mod Menu
-    modImplementation "com.terraformersmc:modmenu:4.0.0"
-
-    modRuntimeOnly "mezz.jei:jei-1.19-fabric:11.0.2.230"
-    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:5.0.34") {
-        exclude(group: "net.fabricmc.fabric-api")
-    }
-    modRuntimeOnly "curse.maven:balmfabric-500525:3850459"
-    modRuntimeOnly "curse.maven:craftingtweaksfabric-502516:3835115"
+    modRuntimeOnly "com.terraformersmc:modmenu:4.0.5"
 
     // Puzzles Lib
     modImplementation "fuzs.puzzleslib:puzzleslib-fabric:${puzzlesVersion}"
-    // try use curse maven when no other option is available
-    // file id is end of url (7 digits usually) when on file details page on curse
-//    modImplementation "curse.maven:puzzleslib-<project-id>:<file-id>"
+
+    modRuntimeOnly "mezz.jei:jei-1.19.1-fabric:11.2.0.241"
+    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.0.75") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    modRuntimeOnly "curse.maven:balmfabric-500525:3901902"
+    modRuntimeOnly "curse.maven:craftingtweaksfabric-502516:3901909"
 }
 
 loom {
@@ -75,12 +72,14 @@ loom {
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
             runDir("../run")
+            vmArg '-Dmixin.debug.export=true'
         }
         server {
             server()
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("../run")
+            vmArg '-Dmixin.debug.export=true'
         }
     }
 }
@@ -159,15 +158,6 @@ publishing {
             artifactId = "${modId}-fabric"
             version = modVersion
             from components.java
-            // exclude certain dependencies when publishing to maven
-            // from https://stackoverflow.com/a/50121790
-            pom.withXml {
-                asNode().dependencies.dependency.each { dep ->
-                    if (["modmenu"].stream().anyMatch(mod -> dep.artifactId.last().value().last().contains(mod))) {
-                        assert dep.parent().remove(dep)
-                    }
-                }
-            }
             pom {
                 name = "${modName} [Fabric]"
                 description = "${modDescription}"
@@ -191,6 +181,18 @@ publishing {
                     developer {
                         id = "${modAuthor}".toLowerCase()
                         name = "${modAuthor}"
+                    }
+                }
+            }
+            afterEvaluate {
+                // exclude certain dependencies when publishing to maven
+                // from https://stackoverflow.com/a/50121790
+                pom.withXml {
+                    asNode().dependencies.dependency.each { dep ->
+                        // use this approach to make excluding dependencies from Curse Maven more convenient
+                        if (["com.terraformersmc:modmenu"].stream().anyMatch(mod -> "${dep.groupId.last().value().last()}:${dep.artifactId.last().value().last()}".startsWith(mod))) {
+                            assert dep.parent().remove(dep)
+                        }
                     }
                 }
             }

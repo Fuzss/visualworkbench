@@ -1,9 +1,9 @@
 package fuzs.visualworkbench.registry;
 
 import fuzs.puzzleslib.core.CoreServices;
-import fuzs.puzzleslib.registry.RegistryManager;
-import fuzs.puzzleslib.registry.RegistryReference;
-import fuzs.puzzleslib.registry.builder.ModBlockEntityTypeBuilder;
+import fuzs.puzzleslib.init.RegistryManager;
+import fuzs.puzzleslib.init.RegistryReference;
+import fuzs.puzzleslib.init.builder.ModBlockEntityTypeBuilder;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.config.JsonConfigBuilder;
 import fuzs.visualworkbench.world.inventory.ModCraftingMenu;

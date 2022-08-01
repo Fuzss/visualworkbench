@@ -1,6 +1,6 @@
 package fuzs.visualworkbench;
 
-import fuzs.puzzleslib.config.ConfigHolderV2;
+import fuzs.puzzleslib.config.ConfigHolder;
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.visualworkbench.config.ClientConfig;
@@ -15,7 +15,7 @@ public class VisualWorkbench implements ModConstructor {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_NAME);
 
     @SuppressWarnings("Convert2MethodRef")
-    public static final ConfigHolderV2 CONFIG = CoreServices.FACTORIES.client(ClientConfig.class, () -> new ClientConfig());
+    public static final ConfigHolder CONFIG = CoreServices.FACTORIES.clientConfig(ClientConfig.class, () -> new ClientConfig());
 
     @Override
     public void onConstructMod() {
