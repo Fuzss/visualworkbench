@@ -1,10 +1,9 @@
 package fuzs.visualworkbench.world.inventory;
 
 import fuzs.visualworkbench.mixin.accessor.CraftingMenuAccessor;
-import fuzs.visualworkbench.registry.ModRegistry;
+import fuzs.visualworkbench.init.ModRegistry;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;

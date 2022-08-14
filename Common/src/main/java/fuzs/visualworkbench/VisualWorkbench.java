@@ -5,7 +5,7 @@ import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.config.JsonConfigBuilder;
-import fuzs.visualworkbench.registry.ModRegistry;
+import fuzs.visualworkbench.init.ModRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

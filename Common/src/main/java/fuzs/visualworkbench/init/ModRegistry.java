@@ -1,4 +1,4 @@
-package fuzs.visualworkbench.registry;
+package fuzs.visualworkbench.init;
 
 import fuzs.puzzleslib.core.CoreServices;
 import fuzs.puzzleslib.init.RegistryManager;

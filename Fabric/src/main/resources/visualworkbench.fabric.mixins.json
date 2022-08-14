@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_17",
+  "package": "fuzs.visualworkbench.mixin",
+  "refmap": "visualworkbench.refmap.json",
+  "mixins": [
+    "accessor.BlockEntityTypeAccessor"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

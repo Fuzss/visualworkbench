@@ -2,7 +2,7 @@ package fuzs.visualworkbench.client;
 
 import fuzs.puzzleslib.client.core.ClientModConstructor;
 import fuzs.visualworkbench.client.renderer.blockentity.WorkbenchTileEntityRenderer;
-import fuzs.visualworkbench.registry.ModRegistry;
+import fuzs.visualworkbench.init.ModRegistry;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 
 public class VisualWorkbenchClient implements ClientModConstructor {

@@ -1,6 +1,6 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
-import fuzs.visualworkbench.registry.ModRegistry;
+import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.inventory.ModCraftingMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -11,7 +11,6 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;

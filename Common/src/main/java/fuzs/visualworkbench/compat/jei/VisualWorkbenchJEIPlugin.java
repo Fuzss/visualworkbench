@@ -1,7 +1,7 @@
 package fuzs.visualworkbench.compat.jei;
 
 import fuzs.visualworkbench.VisualWorkbench;
-import fuzs.visualworkbench.registry.ModRegistry;
+import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.inventory.ModCraftingMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
