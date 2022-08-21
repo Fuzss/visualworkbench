@@ -27,8 +27,8 @@ version = "v${modVersion}-${minecraftVersion}-Forge"
 group = modMavenGroup
 
 minecraft {
-//    mappings channel: 'parchment', version: "${parchmentMappingsVersion}-${minecraftVersion}"
-    mappings channel: 'official', version: "${minecraftVersion}"
+    mappings channel: 'parchment', version: "${parchmentMappingsVersion}-${minecraftVersion}"
+//    mappings channel: 'official', version: "${minecraftVersion}"
 
     runs {
         client {
@@ -115,16 +115,16 @@ dependencies {
 
     // Quality of Life Mods
     runtimeOnly fg.deobf("curse.maven:catalogue-459701:3873264")
-    runtimeOnly fg.deobf("fuzs.bettermodsbutton:bettermodsbutton-forge:4.1.2")
+    runtimeOnly fg.deobf("fuzs.bettermodsbutton:bettermodsbutton-forge:4.2.0")
 //    runtimeOnly fg.deobf("curse.maven:configmenusforge-544048:3822820")
 //    runtimeOnly fg.deobf("curse.maven:configured-457570:3903908")
 
     // Puzzles Lib
     implementation fg.deobf("fuzs.puzzleslib:puzzleslib-forge:${puzzlesVersion}")
 
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.1-forge:11.2.0.241")
-    runtimeOnly fg.deobf("curse.maven:balm-531761:3901901")
-    runtimeOnly fg.deobf("curse.maven:craftingtweaks-233071:3901912")
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19.2-forge:11.2.0.256")
+    runtimeOnly fg.deobf("curse.maven:balm-531761:3914527")
+    runtimeOnly fg.deobf("curse.maven:craftingtweaks-233071:3914007")
 }
 
 mixin {
