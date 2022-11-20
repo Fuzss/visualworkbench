@@ -12,7 +12,7 @@ import net.minecraft.world.phys.BlockHitResult;
 public class OpenMenuHandler {
 
     public InteractionResult onUseBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
-        if (world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof VisualCraftingTableBlock block && block.hasBlockEntity() && world.getBlockEntity(hitResult.getBlockPos()) instanceof CraftingTableBlockEntity blockEntity) {
+        if (world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof VisualCraftingTableBlock block && block.hasBlockEntity() && world.getBlockEntity(hitResult.getBlockPos()) instanceof CraftingTableBlockEntity blockEntity && !player.isCrouching()) {
             if (world.isClientSide) {
                 return InteractionResult.SUCCESS;
             } else {
