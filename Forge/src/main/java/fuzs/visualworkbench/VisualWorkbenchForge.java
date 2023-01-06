@@ -9,6 +9,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 
+import java.util.Optional;
+
 @Mod(VisualWorkbench.MOD_ID)
 @Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
 public class VisualWorkbenchForge {
@@ -20,11 +22,10 @@ public class VisualWorkbenchForge {
     }
 
     private static void registerHandlers() {
-        OpenMenuHandler openMenuHandler = new OpenMenuHandler();
         MinecraftForge.EVENT_BUS.addListener((final PlayerInteractEvent.RightClickBlock evt) -> {
-            InteractionResult result = openMenuHandler.onUseBlock(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getHitVec());
-            if (result != InteractionResult.PASS) {
-                evt.setCancellationResult(result);
+            Optional<InteractionResult> result = OpenMenuHandler.onUseBlock(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getHitVec());
+            if (result.isPresent()) {
+                evt.setCancellationResult(result.get());
                 evt.setCanceled(true);
             }
         });

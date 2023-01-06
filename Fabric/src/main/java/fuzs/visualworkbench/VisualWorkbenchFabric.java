@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -27,8 +28,7 @@ public class VisualWorkbenchFabric implements ModInitializer {
     }
 
     private static void registerHandlers() {
-        OpenMenuHandler openMenuHandler = new OpenMenuHandler();
-        UseBlockCallback.EVENT.register(openMenuHandler::onUseBlock);
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> OpenMenuHandler.onUseBlock(player, world, hand, hitResult).orElse(InteractionResult.PASS));
         // workaround for mod compat on Fabric: mod loading is done sequentially, everything registered before us is already added to the crafting table block entity as normal
         // everything registered afterwards runs through this callback and is hacked into the valid blocks list of our crafting table block entity
         RegistryEntryAddedCallback.event(Registry.BLOCK).register((int rawId, ResourceLocation id, Block object) -> {

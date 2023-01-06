@@ -9,18 +9,25 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
+import java.util.Optional;
+
 public class OpenMenuHandler {
 
-    public InteractionResult onUseBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
-        if (world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof VisualCraftingTableBlock block && block.hasBlockEntity() && world.getBlockEntity(hitResult.getBlockPos()) instanceof CraftingTableBlockEntity blockEntity) {
-            if (world.isClientSide) {
-                return InteractionResult.SUCCESS;
-            } else {
-                player.openMenu(blockEntity);
-                player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
-                return InteractionResult.CONSUME;
+    public static Optional<InteractionResult> onUseBlock(Player player, Level world, InteractionHand hand, BlockHitResult hitResult) {
+        if (world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof VisualCraftingTableBlock block) {
+            if (block.hasBlockEntity() && world.getBlockEntity(hitResult.getBlockPos()) instanceof CraftingTableBlockEntity blockEntity) {
+                boolean preventInteraction = player.isSecondaryUseActive() && (!player.getMainHandItem().isEmpty() || !player.getOffhandItem().isEmpty());
+                if (!preventInteraction || player.isSpectator()) {
+                    if (!world.isClientSide) {
+                        player.openMenu(blockEntity);
+                        // vanilla returns success instead of consume for spectators on server, not sure if it actually makes a difference
+                        if (player.isSpectator()) return Optional.of(InteractionResult.SUCCESS);
+                        player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+                    }
+                    return Optional.of(InteractionResult.sidedSuccess(world.isClientSide));
+                }
             }
         }
-        return InteractionResult.PASS;
+        return Optional.empty();
     }
 }
