@@ -3,6 +3,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.2.2-1.19.2] - 2023-02-10
+### Changed
+- Minor refactors and clean-ups
+### Fixed
+- Fixed empty item stacks being serialized occasionally leading to huge nbt tags
+- Fixed rendering calculations running on the server, too, which is unnecessary
+
 ## [v4.2.1-1.19.2] - 2023-01-06
 ### Fixed
 - Fixed crafting tables ignoring the player sneaking when clicked upon (the menu would open regardless and prevent placing any blocks against the crafting table)

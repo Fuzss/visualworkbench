@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface CraftingMenuAccessor {
 
     @Mutable
-    @Accessor
-    void setCraftSlots(CraftingContainer craftSlots);
+    @Accessor("craftSlots")
+    void visualworkbench$setCraftSlots(CraftingContainer craftSlots);
 
-    @Accessor
-    ResultContainer getResultSlots();
+    @Accessor("resultSlots")
+    ResultContainer visualworkbench$getResultSlots();
 }

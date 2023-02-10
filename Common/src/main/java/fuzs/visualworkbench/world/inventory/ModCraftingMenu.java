@@ -22,23 +22,24 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
     private final Player player;
     private final Consumer<ItemStack> containerData;
 
-    public ModCraftingMenu(int id, Inventory playerInventory) {
-        this(id, playerInventory, new SimpleContainer(9), ContainerLevelAccess.NULL, stack -> {});
+    public ModCraftingMenu(int id, Inventory inventory) {
+        this(id, inventory, new SimpleContainer(9), ContainerLevelAccess.NULL, stack -> {});
     }
 
-    public ModCraftingMenu(int id, Inventory playerInventory, Container tileInventory, ContainerLevelAccess access, Consumer<ItemStack> containerData) {
-        super(id, playerInventory, access);
-        this.craftSlots = new CraftingContainerWrapper(tileInventory, this, 3, 3);
-        this.resultSlots = ((CraftingMenuAccessor) this).getResultSlots();
+    public ModCraftingMenu(int id, Inventory inventory, Container container, ContainerLevelAccess access, Consumer<ItemStack> containerData) {
+        super(id, inventory, access);
+        this.craftSlots = new CraftingContainerWrapper(container, this, 3, 3);
+        this.resultSlots = ((CraftingMenuAccessor) this).visualworkbench$getResultSlots();
         this.access = access;
-        this.player = playerInventory.player;
+        this.player = inventory.player;
         this.containerData = containerData;
-        ((CraftingMenuAccessor) this).setCraftSlots(this.craftSlots);
-        this.slots.set(0, Util.make(new ResultSlot(playerInventory.player, this.craftSlots, this.resultSlots, 0, 124, 35) {
+        ((CraftingMenuAccessor) this).visualworkbench$setCraftSlots(this.craftSlots);
+        this.slots.set(0, Util.make(new ResultSlot(inventory.player, this.craftSlots, this.resultSlots, 0, 124, 35) {
+
             @Override
-            public void set(ItemStack p_75215_1_) {
+            public void set(ItemStack stack) {
                 // fast workbench makes this do nothing (via mixin), but in our case it is needed to avoid client desync
-                this.container.setItem(this.getContainerSlot(), p_75215_1_);
+                this.container.setItem(this.getContainerSlot(), stack);
                 this.setChanged();
             }
         }, slot -> slot.index = 0));
@@ -109,24 +110,24 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
      * copied from vanilla super to avoid FastWorkbench mixin which would lead to a ClassCastException for craftSlots
      */
     @Override
-    public ItemStack quickMoveStack(Player pPlayer, int pIndex) {
+    public ItemStack quickMoveStack(Player player, int index) {
         ItemStack itemstack = ItemStack.EMPTY;
-        Slot slot = this.slots.get(pIndex);
+        Slot slot = this.slots.get(index);
         if (slot != null && slot.hasItem()) {
             ItemStack itemstack1 = slot.getItem();
             itemstack = itemstack1.copy();
-            if (pIndex == 0) {
+            if (index == 0) {
                 this.access.execute((p_39378_, p_39379_) -> {
-                    itemstack1.getItem().onCraftedBy(itemstack1, p_39378_, pPlayer);
+                    itemstack1.getItem().onCraftedBy(itemstack1, p_39378_, player);
                 });
                 if (!this.moveItemStackTo(itemstack1, 10, 46, true)) {
                     return ItemStack.EMPTY;
                 }
 
                 slot.onQuickCraft(itemstack1, itemstack);
-            } else if (pIndex >= 10 && pIndex < 46) {
+            } else if (index >= 10 && index < 46) {
                 if (!this.moveItemStackTo(itemstack1, 1, 10, false)) {
-                    if (pIndex < 37) {
+                    if (index < 37) {
                         if (!this.moveItemStackTo(itemstack1, 37, 46, false)) {
                             return ItemStack.EMPTY;
                         }
@@ -148,9 +149,9 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
                 return ItemStack.EMPTY;
             }
 
-            slot.onTake(pPlayer, itemstack1);
-            if (pIndex == 0) {
-                pPlayer.drop(itemstack1, false);
+            slot.onTake(player, itemstack1);
+            if (index == 0) {
+                player.drop(itemstack1, false);
             }
         }
 

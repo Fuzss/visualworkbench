@@ -13,18 +13,16 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.Registry;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-public class WorkbenchTileEntityRenderer implements BlockEntityRenderer<CraftingTableBlockEntity> {
-    private final ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<CraftingTableBlockEntity> {
+    private final ItemRenderer itemRenderer;
 
-    public WorkbenchTileEntityRenderer(BlockEntityRendererProvider.Context context) {
-
+    public WorkbenchBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
+        this.itemRenderer = context.getItemRenderer();
     }
 
     @Override

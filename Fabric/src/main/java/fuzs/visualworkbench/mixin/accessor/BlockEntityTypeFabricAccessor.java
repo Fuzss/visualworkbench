@@ -9,12 +9,12 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.Set;
 
 @Mixin(BlockEntityType.class)
-public interface BlockEntityTypeAccessor {
+public interface BlockEntityTypeFabricAccessor {
 
-    @Accessor
-    Set<Block> getValidBlocks();
+    @Accessor("validBlocks")
+    Set<Block> visualworkbench$getValidBlocks();
 
-    @Accessor
+    @Accessor("validBlocks")
     @Mutable
-    void setValidBlocks(Set<Block> validBlocks);
+    void visualworkbench$setValidBlocks(Set<Block> validBlocks);
 }

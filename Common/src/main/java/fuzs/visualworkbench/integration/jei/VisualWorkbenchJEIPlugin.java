@@ -1,4 +1,4 @@
-package fuzs.visualworkbench.compat.jei;
+package fuzs.visualworkbench.integration.jei;
 
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.init.ModRegistry;

@@ -5,7 +5,7 @@
   "package": "fuzs.visualworkbench.mixin",
   "refmap": "visualworkbench.refmap.json",
   "mixins": [
-    "accessor.BlockEntityTypeAccessor"
+    "accessor.BlockEntityTypeFabricAccessor"
   ],
   "client": [
   ],

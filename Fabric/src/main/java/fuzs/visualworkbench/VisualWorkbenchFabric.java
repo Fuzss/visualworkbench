@@ -6,7 +6,7 @@ import fuzs.puzzleslib.core.CoreServices;
 import fuzs.visualworkbench.config.JsonConfigBuilder;
 import fuzs.visualworkbench.handler.OpenMenuHandler;
 import fuzs.visualworkbench.init.ModRegistry;
-import fuzs.visualworkbench.mixin.accessor.BlockEntityTypeAccessor;
+import fuzs.visualworkbench.mixin.accessor.BlockEntityTypeFabricAccessor;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -40,11 +40,11 @@ public class VisualWorkbenchFabric implements ModInitializer {
 
     private static void addValidCraftingTableBlock(Block object) {
         BlockEntityType<CraftingTableBlockEntity> craftingTable = ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.get();
-        Set<Block> validBlocks = ((BlockEntityTypeAccessor) craftingTable).getValidBlocks();
+        Set<Block> validBlocks = ((BlockEntityTypeFabricAccessor) craftingTable).visualworkbench$getValidBlocks();
         // vanilla makes an immutable set out of the valid blocks list, so we just replace it with a mutable one for future additions
         if (validBlocks instanceof ImmutableSet<Block>) {
             validBlocks = Sets.newHashSet(validBlocks);
-            ((BlockEntityTypeAccessor) craftingTable).setValidBlocks(validBlocks);
+            ((BlockEntityTypeFabricAccessor) craftingTable).visualworkbench$setValidBlocks(validBlocks);
         }
         validBlocks.add(object);
         JsonConfigBuilder.INSTANCE.clearCache();

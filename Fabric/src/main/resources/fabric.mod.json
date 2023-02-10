@@ -14,7 +14,7 @@
     "sources": "${modPageUrl}"
   },
 
-  "license": "MPL-2",
+  "license": "MPL-2.0",
   "icon": "mod_logo.png",
 
   "environment": "${modFabricEnvironment}",
@@ -26,7 +26,7 @@
       "${clientEntryPoint}"
     ],
     "jei_mod_plugin": [
-      "${modGroup}.compat.jei.VisualWorkbenchJEIPlugin"
+      "${modGroup}.integration.jei.VisualWorkbenchJEIPlugin"
     ]
   },
   "mixins": [

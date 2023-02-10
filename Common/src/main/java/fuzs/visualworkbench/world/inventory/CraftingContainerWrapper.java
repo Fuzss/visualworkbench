@@ -8,39 +8,39 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
 public class CraftingContainerWrapper extends CraftingContainer {
-    private final Container inventory;
+    private final Container container;
     private final AbstractContainerMenu menu;
 
-    public CraftingContainerWrapper(Container inventory, AbstractContainerMenu eventHandler, int width, int height) {
+    public CraftingContainerWrapper(Container container, AbstractContainerMenu eventHandler, int width, int height) {
         super(eventHandler, width, height);
-        this.inventory = inventory;
+        this.container = container;
         this.menu = eventHandler;
         if (width * height != this.getContainerSize()) throw new IllegalArgumentException("Wrong crafting inventory dimensions!");
     }
 
     @Override
     public int getContainerSize() {
-        return this.inventory.getContainerSize();
+        return this.container.getContainerSize();
     }
 
     @Override
     public boolean isEmpty() {
-        return this.inventory.isEmpty();
+        return this.container.isEmpty();
     }
 
     @Override
     public ItemStack getItem(int index) {
-        return this.inventory.getItem(index);
+        return this.container.getItem(index);
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index) {
-        return this.inventory.removeItemNoUpdate(index);
+        return this.container.removeItemNoUpdate(index);
     }
 
     @Override
     public ItemStack removeItem(int index, int count) {
-        ItemStack itemstack = this.inventory.removeItem(index, count);
+        ItemStack itemstack = this.container.removeItem(index, count);
         if (!itemstack.isEmpty()) {
             this.menu.slotsChanged(this);
         }
@@ -49,23 +49,23 @@ public class CraftingContainerWrapper extends CraftingContainer {
 
     @Override
     public void setItem(int index, ItemStack stack) {
-        this.inventory.setItem(index, stack);
+        this.container.setItem(index, stack);
         this.menu.slotsChanged(this);
     }
 
     @Override
     public void setChanged() {
-        this.inventory.setChanged();
+        this.container.setChanged();
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return this.inventory.stillValid(player);
+        return this.container.stillValid(player);
     }
 
     @Override
     public void clearContent() {
-        this.inventory.clearContent();
+        this.container.clearContent();
     }
 
     @Override
