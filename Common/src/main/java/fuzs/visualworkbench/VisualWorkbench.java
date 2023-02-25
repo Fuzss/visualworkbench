@@ -6,6 +6,7 @@ import fuzs.puzzleslib.core.ModConstructor;
 import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.config.JsonConfigBuilder;
 import fuzs.visualworkbench.init.ModRegistry;
+import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,5 +23,9 @@ public class VisualWorkbench implements ModConstructor {
         CONFIG.bakeConfigs(MOD_ID);
         JsonConfigBuilder.INSTANCE.load();
         ModRegistry.touch();
+    }
+
+    public static ResourceLocation id(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }
