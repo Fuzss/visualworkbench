@@ -5,6 +5,7 @@ import fuzs.visualworkbench.handler.OpenMenuHandler;
 import net.minecraft.world.InteractionResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
@@ -22,7 +23,8 @@ public class VisualWorkbenchForge {
     }
 
     private static void registerHandlers() {
-        MinecraftForge.EVENT_BUS.addListener((final PlayerInteractEvent.RightClickBlock evt) -> {
+        // let other run first, we just reproduce the vanilla screen opening basically
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW, (final PlayerInteractEvent.RightClickBlock evt) -> {
             Optional<InteractionResult> result = OpenMenuHandler.onUseBlock(evt.getEntity(), evt.getLevel(), evt.getHand(), evt.getHitVec());
             if (result.isPresent()) {
                 evt.setCancellationResult(result.get());

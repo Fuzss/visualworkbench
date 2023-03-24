@@ -43,6 +43,7 @@ abstract class CraftingTableBlockMixin extends Block implements EntityBlock, Vis
         return level.isClientSide ? checkType(type, ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.get(), CraftingTableBlockEntity::clientTick) : null;
     }
 
+    @SuppressWarnings("unchecked")
     @Nullable
     private static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
@@ -84,9 +85,9 @@ abstract class CraftingTableBlockMixin extends Block implements EntityBlock, Vis
     }
 
     @Inject(method = "getMenuProvider", at = @At("HEAD"), cancellable = true)
-    public void getMenuProvider(BlockState state, Level level, BlockPos pos, CallbackInfoReturnable<MenuProvider> callbackInfo) {
+    public void getMenuProvider(BlockState state, Level level, BlockPos pos, CallbackInfoReturnable<MenuProvider> callback) {
         if (this.hasBlockEntity() && level.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
-            callbackInfo.setReturnValue(blockEntity);
+            callback.setReturnValue(blockEntity);
         }
     }
 }

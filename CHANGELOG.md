@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
+## [v4.2.4-1.19.2] - 2023-03-24
+### Fixed
+- Implemented an alternative fix for the Tetra issue addressed in the last version so that no compatibility with certain crafting table mods (such as [Variant Crafting Tables](https://www.curseforge.com/minecraft/mc-mods/variant-crafting-tables)) needs to be sacrificed
+
+## [v4.2.3-1.19.2] - 2023-02-25
+### Fixed
+- Fixed an issue with the Tetra mod where their workbench block couldn't be created by clicking on a crafting table with a hammer
+
 ## [v4.2.2-1.19.2] - 2023-02-10
 ### Changed
 - Minor refactors and clean-ups
