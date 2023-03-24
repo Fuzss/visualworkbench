@@ -5,13 +5,9 @@ import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.level.block.VisualCraftingTableBlock;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.minecraft.core.BlockPos;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.Containers;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +17,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -48,7 +43,6 @@ abstract class CraftingTableBlockMixin extends Block implements EntityBlock, Vis
         return level.isClientSide ? checkType(type, ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.get(), CraftingTableBlockEntity::clientTick) : null;
     }
 
-    @SuppressWarnings("unchecked")
     @Nullable
     private static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> checkType(BlockEntityType<A> givenType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker) {
         return expectedType == givenType ? (BlockEntityTicker<A>) ticker : null;
@@ -89,23 +83,10 @@ abstract class CraftingTableBlockMixin extends Block implements EntityBlock, Vis
         return JsonConfigBuilder.INSTANCE.contains(this);
     }
 
-    @Inject(method = "use", at = @At("HEAD"), cancellable = true)
-    public void use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit, CallbackInfoReturnable<InteractionResult> callback) {
-        if (this.hasBlockEntity() && world.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
-            if (world.isClientSide) {
-                callback.setReturnValue(InteractionResult.SUCCESS);
-            } else {
-                player.openMenu(blockEntity);
-                player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
-                callback.setReturnValue(InteractionResult.CONSUME);
-            }
-        }
-    }
-
     @Inject(method = "getMenuProvider", at = @At("HEAD"), cancellable = true)
-    public void getMenuProvider(BlockState state, Level level, BlockPos pos, CallbackInfoReturnable<MenuProvider> callback) {
+    public void getMenuProvider(BlockState state, Level level, BlockPos pos, CallbackInfoReturnable<MenuProvider> callbackInfo) {
         if (this.hasBlockEntity() && level.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
-            callback.setReturnValue(blockEntity);
+            callbackInfo.setReturnValue(blockEntity);
         }
     }
 }
