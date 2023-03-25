@@ -1,11 +1,12 @@
 package fuzs.visualworkbench.client.renderer.blockentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -27,7 +28,8 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
 
     @Override
     public void render(CraftingTableBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn) {
-        combinedLightIn = blockEntity.combinedLight;
+        // light is normally always 0 since it checks inside the crafting table block which is solid, but contents are rendered in the block above
+        combinedLightIn = blockEntity.getLevel() != null ? LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos().above()) : 15728880;
         for (int i = 0; i < blockEntity.getContainerSize(); ++i) {
             ItemStack itemStack = blockEntity.getItem(i);
             if (!itemStack.isEmpty()) {
@@ -56,7 +58,7 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
         BakedModel model = this.itemRenderer.getModel(itemStack, null, null, 0);
         boolean blockItem = model.isGui3d();
         poseStack.translate(0.5, shift, 0.5);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, blockEntity.currentAngle, blockEntity.nextAngle)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, blockEntity.currentAngle, blockEntity.nextAngle)));
         poseStack.translate((double) (index % 3) * 3.0 / 16.0 + 0.3125 - 0.5, 1.09375, (double) (index / 3) * 3.0 / 16.0 + 0.3125 - 0.5);
         float scale = blockItem ? 0.24F : 0.18F;
         poseStack.scale(scale, scale, scale);
@@ -66,10 +68,10 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
         BakedModel model = this.itemRenderer.getModel(itemStack, null, null, 0);
         boolean blockItem = model.isGui3d();
         poseStack.translate(0.5, 0.0, 0.5);
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(Mth.lerp(partialTicks, blockEntity.currentAngle, blockEntity.nextAngle)));
+        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, blockEntity.currentAngle, blockEntity.nextAngle)));
         poseStack.translate((double) (index % 3) * 3.0 / 16.0 + 0.3125 - 0.5, blockItem ? 1.0625 : 1.005, (double) (index / 3) * 3.0 / 16.0 + 0.3125 - 0.5);
-        poseStack.mulPose(Vector3f.XP.rotationDegrees(90.0F));
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180.0F));
+        poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
         float scale = blockItem ? 0.25F : 0.175F;
         poseStack.scale(scale, scale, scale);
     }
@@ -81,7 +83,7 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
         float hoverOffset = Mth.sin(time / 10.0F) * 0.04F + 0.1F;
         float modelYScale = model.getTransforms().getTransform(ItemTransforms.TransformType.GROUND).scale.y();
         poseStack.translate(0.0, hoverOffset + 0.25F * modelYScale, 0.0);
-        poseStack.mulPose(Vector3f.YP.rotation(time / 20.0F));
+        poseStack.mulPose(Axis.YP.rotation(time / 20.0F));
         if (!model.isGui3d()) {
             poseStack.scale(0.75F, 0.75F, 0.75F);
         }

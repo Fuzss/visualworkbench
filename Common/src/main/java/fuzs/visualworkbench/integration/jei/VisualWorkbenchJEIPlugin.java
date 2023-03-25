@@ -9,12 +9,9 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-
 @JeiPlugin
 public class VisualWorkbenchJEIPlugin implements IModPlugin {
 
-    @Nonnull
     @Override
     public ResourceLocation getPluginUid() {
         return new ResourceLocation(VisualWorkbench.MOD_ID, "crafting");

@@ -2,18 +2,15 @@ package fuzs.visualworkbench;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import fuzs.puzzleslib.core.CoreServices;
+import fuzs.puzzleslib.api.core.v1.ModConstructor;
 import fuzs.visualworkbench.config.JsonConfigBuilder;
-import fuzs.visualworkbench.handler.OpenMenuHandler;
 import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.mixin.accessor.BlockEntityTypeFabricAccessor;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
@@ -23,15 +20,14 @@ public class VisualWorkbenchFabric implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        CoreServices.FACTORIES.modConstructor(VisualWorkbench.MOD_ID).accept(new VisualWorkbench());
+        ModConstructor.construct(VisualWorkbench.MOD_ID, VisualWorkbench::new);
         registerHandlers();
     }
 
     private static void registerHandlers() {
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> OpenMenuHandler.onUseBlock(player, world, hand, hitResult).orElse(InteractionResult.PASS));
         // workaround for mod compat on Fabric: mod loading is done sequentially, everything registered before us is already added to the crafting table block entity as normal
         // everything registered afterwards runs through this callback and is hacked into the valid blocks list of our crafting table block entity
-        RegistryEntryAddedCallback.event(Registry.BLOCK).register((int rawId, ResourceLocation id, Block object) -> {
+        RegistryEntryAddedCallback.event(BuiltInRegistries.BLOCK).register((int rawId, ResourceLocation id, Block object) -> {
             if (JsonConfigBuilder.INSTANCE.isValidCraftingTable(id, object)) {
                 addValidCraftingTableBlock(object);
             }

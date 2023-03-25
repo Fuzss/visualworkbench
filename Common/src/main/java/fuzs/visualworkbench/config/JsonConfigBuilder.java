@@ -7,10 +7,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import fuzs.puzzleslib.json.JsonConfigFileUtil;
-import fuzs.puzzleslib.json.JsonSerializationUtil;
+import fuzs.puzzleslib.api.config.v3.json.JsonConfigFileUtil;
+import fuzs.puzzleslib.api.config.v3.json.JsonSerializationUtil;
 import fuzs.visualworkbench.VisualWorkbench;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CraftingTableBlock;
@@ -296,8 +296,8 @@ public class JsonConfigBuilder {
 
     public Stream<Block> getBlockStream() {
         return this.locationValues.stream()
-                .filter(Registry.BLOCK::containsKey)
-                .map(Registry.BLOCK::get)
+                .filter(BuiltInRegistries.BLOCK::containsKey)
+                .map(BuiltInRegistries.BLOCK::get)
                 .filter(block -> block instanceof CraftingTableBlock);
     }
 

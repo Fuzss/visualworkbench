@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_17",
   "package": "fuzs.visualworkbench.mixin",
   "refmap": "visualworkbench.refmap.json",
+  "plugin": "fuzs.visualworkbench.mixin.ModMixinConfigPlugin",
   "mixins": [
     "CraftingTableBlockMixin",
     "accessor.CraftingMenuAccessor"

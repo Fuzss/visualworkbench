@@ -28,7 +28,7 @@ public class ModCraftingMenu extends CraftingMenu implements ContainerListener {
 
     public ModCraftingMenu(int id, Inventory inventory, Container container, ContainerLevelAccess access, Consumer<ItemStack> containerData) {
         super(id, inventory, access);
-        this.craftSlots = new CraftingContainerWrapper(container, this, 3, 3);
+        this.craftSlots = new ForwardingCraftingContainer(container, this, 3, 3);
         this.resultSlots = ((CraftingMenuAccessor) this).visualworkbench$getResultSlots();
         this.access = access;
         this.player = inventory.player;

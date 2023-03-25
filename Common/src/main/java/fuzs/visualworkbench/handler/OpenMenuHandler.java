@@ -1,5 +1,6 @@
 package fuzs.visualworkbench.handler;
 
+import fuzs.puzzleslib.api.event.v1.core.EventResultHolder;
 import fuzs.visualworkbench.core.CommonAbstractions;
 import fuzs.visualworkbench.world.level.block.VisualCraftingTableBlock;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
@@ -12,11 +13,9 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 
-import java.util.Optional;
-
 public class OpenMenuHandler {
 
-    public static Optional<InteractionResult> onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
+    public static EventResultHolder<InteractionResult> onUseBlock(Player player, Level level, InteractionHand hand, BlockHitResult hitResult) {
 
         BlockPos pos = hitResult.getBlockPos();
         if (level.getBlockState(pos).getBlock() instanceof VisualCraftingTableBlock block) {
@@ -26,13 +25,13 @@ public class OpenMenuHandler {
                     if (!level.isClientSide) {
                         player.openMenu(blockEntity);
                     }
-                    return Optional.of(InteractionResult.SUCCESS);
+                    return EventResultHolder.interrupt(InteractionResult.SUCCESS);
                 }
 
                 UseOnContext context = new UseOnContext(player, hand, hitResult);
                 InteractionResult result = CommonAbstractions.INSTANCE.onItemUseFirst(player.getItemInHand(hand), context);
                 if (result != InteractionResult.PASS) {
-                    return Optional.of(result);
+                    return EventResultHolder.interrupt(result);
                 }
 
                 boolean preventInteraction = !CommonAbstractions.INSTANCE.doesSneakBypassUse(player.getMainHandItem(), level, pos, player) || !CommonAbstractions.INSTANCE.doesSneakBypassUse(player.getOffhandItem(), level, pos, player);
@@ -41,7 +40,7 @@ public class OpenMenuHandler {
                         player.openMenu(blockEntity);
                         player.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
                     }
-                    return Optional.of(InteractionResult.sidedSuccess(level.isClientSide));
+                    return EventResultHolder.interrupt(InteractionResult.sidedSuccess(level.isClientSide));
                 }
 
                 // don't cancel here, vanilla will try to interact with the block again, which will fail since the player is sneaking,
@@ -49,6 +48,6 @@ public class OpenMenuHandler {
             }
         }
 
-        return Optional.empty();
+        return EventResultHolder.pass();
     }
 }

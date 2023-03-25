@@ -3,45 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog].
 
-## [v4.2.4-1.19.2] - 2023-03-24
-### Fixed
-- Implemented an alternative fix for the Tetra issue addressed in the last version so that no compatibility with certain crafting table mods (such as [Variant Crafting Tables](https://www.curseforge.com/minecraft/mc-mods/variant-crafting-tables)) needs to be sacrificed
-
-## [v4.2.3-1.19.2] - 2023-02-25
-### Fixed
-- Fixed an issue with the Tetra mod where their workbench block couldn't be created by clicking on a crafting table with a hammer
-
-## [v4.2.2-1.19.2] - 2023-02-10
-### Changed
-- Minor refactors and clean-ups
-### Fixed
-- Fixed empty item stacks being serialized occasionally leading to huge nbt tags
-- Fixed rendering calculations running on the server, too, which is unnecessary
-
-## [v4.2.1-1.19.2] - 2023-01-06
-### Fixed
-- Fixed crafting tables ignoring the player sneaking when clicked upon (the menu would open regardless and prevent placing any blocks against the crafting table)
-
-## [v4.2.0-1.19.2] - 2022-08-21
-- Compiled for Minecraft 1.19.2
-
-## [v4.1.1-1.19.1] - 2022-08-14
-### Changed
-- Modded crafting tables are now fully supported on Fabric yay!
-- Added default compat for crafting tables from a few more mods
-
-## [v4.1.0-1.19.1] - 2022-08-01
-- Compiled for Minecraft 1.19.1
-- Updated to Puzzles Lib v4.1.0
-
-## [v4.0.0-1.19] - 2022-07-19
-- Ported to Minecraft 1.19
-- Split into multi-loader project
-### Added
-- Added JEI support on Fabric
-### Changed
-- Modded crafting tables that override opening the crafting menu can now be supported when added to the config (e.g. from the VariantCraftingTables mod)
-### Fixed
-- Fixed the result preview showing a wrong item when said item has nbt data
+## [v5.0.0-1.19.3] - 2023-03-25
+- Ported to Minecraft 1.19.3
 
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/

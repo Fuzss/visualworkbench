@@ -1,7 +1,8 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
+import fuzs.visualworkbench.VisualWorkbench;
+import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.init.ModRegistry;
-import fuzs.visualworkbench.proxy.Proxy;
 import fuzs.visualworkbench.util.MathHelper;
 import fuzs.visualworkbench.world.inventory.ModCraftingMenu;
 import net.minecraft.core.BlockPos;
@@ -18,15 +19,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BaseContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     private static final String TAG_LAST_RECIPE = "LastRecipe";
 
     private final NonNullList<ItemStack> inventory = NonNullList.withSize(9, ItemStack.EMPTY);
     private ItemStack lastResult = ItemStack.EMPTY;
-    public int combinedLight;
     public int ticks;
     public float currentAngle;
     public float nextAngle;
@@ -166,11 +165,8 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     }
 
     public static void clientTick(Level level, BlockPos pos, BlockState state, CraftingTableBlockEntity blockEntity) {
-        if (blockEntity.isEmpty()) return;
-        // renderer checks inside this block where lighting will be 0, so we instead check above
-        BlockPos above = blockEntity.getBlockPos().above();
-        blockEntity.combinedLight = blockEntity.getLevel() != null ? Proxy.INSTANCE.getLightColor(level, above) : 15728880;
         ++blockEntity.ticks;
+        if (blockEntity.isEmpty() || !VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients) return;
         Player player = level.getNearestPlayer((double)blockEntity.worldPosition.getX() + 0.5D, (double)blockEntity.worldPosition.getY() + 0.5D, (double)blockEntity.worldPosition.getZ() + 0.5D, 3.0D, false);
         if (player != null) {
             double d0 = player.getX() - ((double)blockEntity.worldPosition.getX() + 0.5D);

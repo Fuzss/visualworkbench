@@ -1,6 +1,6 @@
 package fuzs.visualworkbench.client;
 
-import fuzs.puzzleslib.client.core.ClientCoreServices;
+import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.visualworkbench.VisualWorkbench;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,6 +12,6 @@ public class VisualWorkbenchForgeClient {
 
     @SubscribeEvent
     public static void onConstructMod(final FMLConstructModEvent evt) {
-        ClientCoreServices.FACTORIES.clientModConstructor(VisualWorkbench.MOD_ID).accept(new VisualWorkbenchClient());
+        ClientModConstructor.construct(VisualWorkbench.MOD_ID, VisualWorkbenchClient::new);
     }
 }

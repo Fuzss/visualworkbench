@@ -7,15 +7,14 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class CraftingContainerWrapper extends CraftingContainer {
+public class ForwardingCraftingContainer extends CraftingContainer {
     private final Container container;
     private final AbstractContainerMenu menu;
 
-    public CraftingContainerWrapper(Container container, AbstractContainerMenu eventHandler, int width, int height) {
+    public ForwardingCraftingContainer(Container container, AbstractContainerMenu eventHandler, int width, int height) {
         super(eventHandler, width, height);
         this.container = container;
         this.menu = eventHandler;
-        if (width * height != this.getContainerSize()) throw new IllegalArgumentException("Wrong crafting inventory dimensions!");
     }
 
     @Override
