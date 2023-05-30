@@ -44,7 +44,7 @@ public class OpenMenuHandler {
                 }
 
                 // don't cancel here, vanilla will try to interact with the block again, which will fail since the player is sneaking,
-                // but afterwards there are additional attempts to use the currently held item which we don't need to copy here
+                // but afterward there are additional attempts to use the currently held item which we don't need to copy here
             }
         }
 
