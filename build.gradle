@@ -44,8 +44,8 @@ subprojects {
             url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven/"
         }
         maven {
-            name = "Progwml6 maven"
-            url = "https://dvs1.progwml6.com/files/maven/"
+            name = 'Terraformers'
+            url = "https://maven.terraformersmc.com/"
         }
         maven {
             name = "ModMaven"

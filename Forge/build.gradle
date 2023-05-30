@@ -27,8 +27,8 @@ version = "v${modVersion}-${minecraftVersion}-Forge"
 group = modMavenGroup
 
 minecraft {
-    mappings channel: 'parchment', version: "${parchmentMappingsVersion}-${parchmentMinecraftVersion}"
-//    mappings channel: 'official', version: "${minecraftVersion}"
+//    mappings channel: 'parchment', version: "${parchmentMappingsVersion}-${minecraftVersion}"
+    mappings channel: 'official', version: "${minecraftVersion}"
 
     runs {
         client {
@@ -116,16 +116,16 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 
     // Quality of Life Mods
-    runtimeOnly fg.deobf("fuzs.bettermodsbutton:bettermodsbutton-forge:5.0.0")
-    runtimeOnly fg.deobf("curse.maven:catalogue-459701:4171025")
-    runtimeOnly fg.deobf("curse.maven:configured-457570:4441589")
+    runtimeOnly fg.deobf("fuzs.bettermodsbutton:bettermodsbutton-forge:6.0.0")
+    runtimeOnly fg.deobf("curse.maven:catalogue-459701:4496718")
+    runtimeOnly fg.deobf("curse.maven:configured-457570:4462894")
+
+    // Just Enough Items
+    compileOnly "mezz.jei:jei-1.19.4-common-api:13.1.0.11"
+    runtimeOnly fg.deobf("mezz.jei:jei-1.19.4-forge:13.1.0.11")
 
     // Puzzles Lib
     api fg.deobf("fuzs.puzzleslib:puzzleslib-forge:${puzzlesVersion}")
-
-    // Just Enough Items
-    compileOnly "mezz.jei:jei-1.19.3-common-api:12.4.0.22"
-    runtimeOnly fg.deobf("mezz.jei:jei-1.19.3-forge:12.4.0.22")
 }
 
 mixin {
@@ -252,7 +252,7 @@ publishing {
                 pom.withXml {
                     asNode().dependencies.dependency.each { dep ->
                         // use this approach to make excluding dependencies from Curse Maven more convenient
-                        if (["curse.maven:", "fuzs.bettermodsbutton:bettermodsbutton-forge", "mezz.jei:"].stream().anyMatch(mod -> "${dep.groupId.last().value().last()}:${dep.artifactId.last().value().last()}".startsWith(mod))) {
+                        if (["curse.maven:", "fuzs.bettermodsbutton:bettermodsbutton-forge"].stream().anyMatch(mod -> "${dep.groupId.last().value().last()}:${dep.artifactId.last().value().last()}".startsWith(mod))) {
                             assert dep.parent().remove(dep)
                         }
                     }

@@ -5,16 +5,15 @@ import com.mojang.math.Axis;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +47,7 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
         } else {
             this.setupFloatingRenderer(blockEntity, partialTicks, poseStack, itemStack, i);
         }
-        Minecraft.getInstance().getItemRenderer().renderStatic(itemStack, ItemTransforms.TransformType.FIXED, combinedLightIn, combinedOverlayIn, poseStack, bufferIn, (int) blockEntity.getBlockPos().asLong() + i);
+        this.itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, combinedLightIn, combinedOverlayIn, poseStack, bufferIn, blockEntity.getLevel(), (int) blockEntity.getBlockPos().asLong() + i);
         poseStack.popPose();
     }
 
@@ -79,15 +78,15 @@ public class WorkbenchBlockEntityRenderer implements BlockEntityRenderer<Craftin
     private void renderResultItem(ItemStack stack, @Nullable Level worldIn, float time, PoseStack poseStack, MultiBufferSource bufferIn, int combinedLightIn) {
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.15F, 0.5F);
-        BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(stack, worldIn, null, 0);
+        BakedModel model = this.itemRenderer.getModel(stack, worldIn, null, 0);
         float hoverOffset = Mth.sin(time / 10.0F) * 0.04F + 0.1F;
-        float modelYScale = model.getTransforms().getTransform(ItemTransforms.TransformType.GROUND).scale.y();
+        float modelYScale = model.getTransforms().getTransform(ItemDisplayContext.GROUND).scale.y();
         poseStack.translate(0.0, hoverOffset + 0.25F * modelYScale, 0.0);
         poseStack.mulPose(Axis.YP.rotation(time / 20.0F));
         if (!model.isGui3d()) {
             poseStack.scale(0.75F, 0.75F, 0.75F);
         }
-        Minecraft.getInstance().getItemRenderer().render(stack, ItemTransforms.TransformType.GROUND, false, poseStack, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, model);
+        this.itemRenderer.render(stack, ItemDisplayContext.GROUND, false, poseStack, bufferIn, combinedLightIn, OverlayTexture.NO_OVERLAY, model);
         poseStack.popPose();
     }
 }
