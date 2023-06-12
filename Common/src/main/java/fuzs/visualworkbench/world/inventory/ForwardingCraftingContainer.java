@@ -7,14 +7,20 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class ForwardingCraftingContainer extends CraftingContainer {
+import java.util.List;
+import java.util.stream.IntStream;
+
+public class ForwardingCraftingContainer implements CraftingContainer {
     private final Container container;
     private final AbstractContainerMenu menu;
+    private final int width;
+    private final int height;
 
     public ForwardingCraftingContainer(Container container, AbstractContainerMenu eventHandler, int width, int height) {
-        super(eventHandler, width, height);
         this.container = container;
         this.menu = eventHandler;
+        this.width = width;
+        this.height = height;
     }
 
     @Override
@@ -72,5 +78,20 @@ public class ForwardingCraftingContainer extends CraftingContainer {
         for (int i = 0; i < this.getContainerSize(); i++) {
             helper.accountSimpleStack(this.getItem(i));
         }
+    }
+
+    @Override
+    public int getWidth() {
+        return this.width;
+    }
+
+    @Override
+    public int getHeight() {
+        return this.height;
+    }
+
+    @Override
+    public List<ItemStack> getItems() {
+        return IntStream.range(0, this.getContainerSize()).mapToObj(this::getItem).toList();
     }
 }

@@ -1,0 +1,50 @@
+[versions]
+minecraft = "1.20"
+parchment = "2023.03.12"
+parchmentMinecraft = "1.19.3"
+puzzles = "7.0.3"
+minPuzzles = "7.0.2"
+resources = "15"
+data = "15"
+
+# Forge
+forge = "1.20-46.0.10"
+minForge = "46.0.0"
+
+# Fabric
+fabric = "0.14.21"
+minFabric = "0.14.21"
+fabricApi = "0.83.0+1.20"
+minFabricApi = "0.83.0"
+
+# Mods
+modmenu = "7.0.1"
+bettermodsbutton = "7.0.0"
+forgeconfigscreens = "7.0.0"
+cardinalcomponents = "5.2.0"
+forgeconfigapiport = "7.0.0"
+extensibleenums = "7.0.0"
+iteminteractionscore = "7.0.0"
+appleskin = "mc1.20-2.5.0"
+jei = "14.0.0.4"
+cloth = "11.0.99"
+architectury = "9.0.8"
+rei = "12.0.624"
+
+[libraries]
+jeiCommonApi = { module = "mezz.jei:jei-1.20-common-api", version.ref = "jei" }
+jeiCommonLibs = { module = "mezz.jei:jei-1.20-lib", version.ref = "jei" }
+jeiFabricApi = { module = "mezz.jei:jei-1.20-fabric-api", version.ref = "jei" }
+jeiFabric = { module = "mezz.jei:jei-1.20-fabric", version.ref = "jei" }
+jeiForgeApi = { module = "mezz.jei:jei-1.20-forge-api", version.ref = "jei" }
+jeiForge = { module = "mezz.jei:jei-1.20-forge", version.ref = "jei" }
+clothFabric = { module = "me.shedaniel.cloth:cloth-config-fabric", version.ref = "cloth" }
+clothForge = { module = "me.shedaniel.cloth:cloth-config-forge", version.ref = "cloth" }
+architecturyFabric = { module = "dev.architectury:architectury-fabric", version.ref = "architectury" }
+architecturyForge = { module = "dev.architectury:architectury-forge", version.ref = "architectury" }
+reiCommonApi = { module = "me.shedaniel:RoughlyEnoughItems-api", version.ref = "rei" }
+reiCommonDefaultPlugin = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin", version.ref = "rei" }
+reiFabricApi = { module = "me.shedaniel:RoughlyEnoughItems-api-fabric", version.ref = "rei" }
+reiFabricDefaultPlugin = { module = "me.shedaniel:RoughlyEnoughItems-default-plugin-fabric", version.ref = "rei" }
+reiFabric = { module = "me.shedaniel:RoughlyEnoughItems-fabric", version.ref = "rei" }
+reiForge = { module = "me.shedaniel:RoughlyEnoughItems-forge", version.ref = "rei" }
