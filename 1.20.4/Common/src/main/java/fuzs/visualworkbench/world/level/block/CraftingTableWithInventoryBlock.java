@@ -74,6 +74,7 @@ public class CraftingTableWithInventoryBlock extends BaseEntityBlock implements 
 
     @Override
     public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+        // similar to Crafter
         if (level.getBlockEntity(blockPos) instanceof CraftingTableBlockEntity blockEntity) {
             return (int) blockEntity.getItems().stream().filter(Predicate.not(ItemStack::isEmpty)).count();
         } else {

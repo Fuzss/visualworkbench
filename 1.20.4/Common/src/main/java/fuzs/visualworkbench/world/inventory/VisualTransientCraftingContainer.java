@@ -2,24 +2,24 @@ package fuzs.visualworkbench.world.inventory;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ResultContainer;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
-public class VisualResultContainer extends ResultContainer {
+public class VisualTransientCraftingContainer extends TransientCraftingContainer {
     private final Container container;
 
-    public VisualResultContainer(NonNullList<ItemStack> items, Container container) {
+    public VisualTransientCraftingContainer(AbstractContainerMenu menu, int width, int height, NonNullList<ItemStack> items, Container container) {
+        super(menu, width, height, items);
         this.container = container;
-        this.itemStacks = items;
     }
 
     @Override
     public ItemStack removeItem(int slot, int amount) {
-        ItemStack result = ContainerHelper.removeItem(this.itemStacks, slot, amount);
-        if (!result.isEmpty()) this.container.setChanged();
-        return result;
+        ItemStack itemStack = super.removeItem(slot, amount);
+        if (!itemStack.isEmpty()) this.container.setChanged();
+        return itemStack;
     }
 
     @Override

@@ -9,5 +9,9 @@ public class ClientConfig implements ConfigCore {
     @Config(description = "Render the result of the crafting operation in addition to crafting table contents.")
     public boolean renderResult = true;
     @Config(description = "Rotate crafting table contents so they always face the closest player.")
-    public boolean rotateIngredients = true;
+    public RotateIngredients rotateIngredients = RotateIngredients.CLOSEST_PLAYER;
+
+    public enum RotateIngredients {
+        CLOSEST_PLAYER, CRAFTING_PLAYER, NEVER
+    }
 }

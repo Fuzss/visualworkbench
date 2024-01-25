@@ -1,8 +1,12 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
+import fuzs.puzzleslib.api.core.v1.Proxy;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.config.ClientConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.CraftingScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -36,8 +40,20 @@ public class CraftingTableAnimationController {
 
     private void setPlayerAngle(Level level) {
         Player player;
-        if (VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients) {
-            player = level.getNearestPlayer(this.position.x(), this.position.y(), this.position.z(), 3.0, false);
+        if (VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients != ClientConfig.RotateIngredients.NEVER) {
+            player = level.getNearestPlayer(this.position.x(), this.position.y(), this.position.z(), 3.0, (Entity entity) -> {
+                if (!entity.isSpectator()) {
+                    return false;
+                } else if (VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients == ClientConfig.RotateIngredients.CLOSEST_PLAYER) {
+                    return true;
+                } else {
+                    if (entity == Proxy.INSTANCE.getClientPlayer()) {
+                        return Minecraft.getInstance().screen instanceof CraftingScreen;
+                    } else {
+                        return false;
+                    }
+                }
+            });
         } else {
             player = null;
         }

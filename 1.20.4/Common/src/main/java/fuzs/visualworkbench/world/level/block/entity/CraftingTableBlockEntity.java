@@ -13,22 +13,20 @@ import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements CraftingContainer, TickingBlockEntity {
+public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements TickingBlockEntity {
     public static final MutableComponent CRAFTING_COMPONENT = Component.translatable("container.crafting");
     public static final String TAG_RESULT = "Result";
 
+    private final CraftingTableAnimationController animationController;
     private NonNullList<ItemStack> items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
     private NonNullList<ItemStack> resultItems = NonNullList.withSize(1, ItemStack.EMPTY);
-    private final CraftingTableAnimationController animationController;
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.value(), pos, blockState);
@@ -75,16 +73,6 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
-    public int getWidth() {
-        return 3;
-    }
-
-    @Override
-    public int getHeight() {
-        return 3;
-    }
-
-    @Override
     public NonNullList<ItemStack> getItems() {
         return this.items;
     }
@@ -92,13 +80,6 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     @Override
     protected void setItems(NonNullList<ItemStack> itemStacks) {
         this.items = itemStacks;
-    }
-
-    @Override
-    public void fillStackedContents(StackedContents contents) {
-        for (ItemStack itemStack : this.items) {
-            contents.accountSimpleStack(itemStack);
-        }
     }
 
     @Override

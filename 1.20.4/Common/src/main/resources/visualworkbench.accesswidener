@@ -9,3 +9,6 @@ accessible  field   net/minecraft/world/inventory/CraftingMenu  access Lnet/mine
 mutable field   net/minecraft/world/inventory/CraftingMenu  access Lnet/minecraft/world/inventory/ContainerLevelAccess;
 accessible  field   net/minecraft/world/inventory/ResultContainer   itemStacks  Lnet/minecraft/core/NonNullList;
 mutable field   net/minecraft/world/inventory/ResultContainer   itemStacks  Lnet/minecraft/core/NonNullList;
+accessible  field   net/minecraft/world/inventory/ResultSlot    craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
+mutable field   net/minecraft/world/inventory/ResultSlot    craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
+mutable field   net/minecraft/world/inventory/Slot  container   Lnet/minecraft/world/Container;
