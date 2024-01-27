@@ -3,9 +3,9 @@ package fuzs.visualworkbench.client.renderer.blockentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import fuzs.visualworkbench.VisualWorkbench;
-import fuzs.visualworkbench.config.ClientConfig;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableAnimationController;
-import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
+import fuzs.visualworkbench.world.level.block.entity.WorkbenchVisualsProvider;
+import fuzs.visualworkbench.config.ClientConfig;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
@@ -14,12 +14,14 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingTableBlockEntityRenderer implements BlockEntityRenderer<CraftingTableBlockEntity> {
+public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container & WorkbenchVisualsProvider> implements BlockEntityRenderer<T> {
     private final ItemRenderer itemRenderer;
 
     public CraftingTableBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
@@ -27,7 +29,7 @@ public class CraftingTableBlockEntityRenderer implements BlockEntityRenderer<Cra
     }
 
     @Override
-    public void render(CraftingTableBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay) {
+    public void render(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay) {
         // light is normally always 0 since it checks inside the crafting table block which is solid, but contents are rendered in the block above
         packedLight = blockEntity.getLevel() != null ? LevelRenderer.getLightColor(blockEntity.getLevel(), blockEntity.getBlockPos().above()) : 15728880;
         for (int i = 0; i < blockEntity.getContainerSize(); ++i) {
@@ -36,13 +38,13 @@ public class CraftingTableBlockEntityRenderer implements BlockEntityRenderer<Cra
                 this.renderIngredientItem(blockEntity, partialTick, poseStack, multiBufferSource, packedLight, packedOverlay, i, itemStack);
             }
         }
-        ItemStack itemStack = blockEntity.getResultItems().get(0);
+        ItemStack itemStack = blockEntity.getCraftingResult();
         if (!itemStack.isEmpty()) {
             this.renderResultItem(itemStack, blockEntity.getLevel(), blockEntity.getAnimationController().ticks + partialTick, poseStack, multiBufferSource, packedLight);
         }
     }
 
-    private void renderIngredientItem(CraftingTableBlockEntity blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, int i, ItemStack itemStack) {
+    private void renderIngredientItem(T blockEntity, float partialTick, PoseStack poseStack, MultiBufferSource multiBufferSource, int packedLight, int packedOverlay, int i, ItemStack itemStack) {
         poseStack.pushPose();
         if (VisualWorkbench.CONFIG.get(ClientConfig.class).flatRendering) {
             this.setupFlatRenderer(blockEntity.getAnimationController(), partialTick, poseStack, itemStack, i);

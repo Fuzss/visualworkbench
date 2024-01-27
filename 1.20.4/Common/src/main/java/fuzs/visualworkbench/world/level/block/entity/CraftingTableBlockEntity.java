@@ -1,6 +1,7 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
 import fuzs.puzzleslib.api.block.v1.entity.TickingBlockEntity;
+import fuzs.puzzleslib.api.container.v1.ContainerSerializationHelper;
 import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.inventory.VisualCraftingMenu;
 import net.minecraft.core.BlockPos;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements TickingBlockEntity {
+public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements TickingBlockEntity, WorkbenchVisualsProvider {
     public static final MutableComponent CRAFTING_COMPONENT = Component.translatable("container.crafting");
     public static final String TAG_RESULT = "Result";
 
@@ -111,6 +112,12 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
         return this.resultItems;
     }
 
+    @Override
+    public ItemStack getCraftingResult() {
+        return this.resultItems.get(0);
+    }
+
+    @Override
     public CraftingTableAnimationController getAnimationController() {
         return this.animationController;
     }

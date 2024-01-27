@@ -16,10 +16,10 @@ public class VisualCraftingMenu extends CraftingMenu {
         super(id, inventory, access);
         this.craftSlots = new VisualTransientCraftingContainer(this, 3, 3, blockEntity.getItems(), blockEntity);
         this.resultSlots = new VisualResultContainer(blockEntity.getResultItems(), blockEntity);
-        this.setCraftingSlotContainer();
+        this.setCraftingSlotsContainer();
     }
 
-    private void setCraftingSlotContainer() {
+    private void setCraftingSlotsContainer() {
         for (int i = 0; i < 10; i++) {
             Slot slot = this.getSlot(i);
             if (slot instanceof ResultSlot resultSlot) {

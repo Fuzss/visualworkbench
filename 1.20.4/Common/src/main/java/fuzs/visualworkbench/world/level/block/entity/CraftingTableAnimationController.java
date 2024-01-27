@@ -12,7 +12,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * All animation code in this class is taken from the old <a href="https://www.curseforge.com/minecraft/mc-mods/realbench">RealBench</a> mod.
+ * A client-side provider for ticking and storing crafting table item animations on a block entity.
+ * <p>Initialize an instance in your block entity constructor, then implement a call for {@link CraftingTableAnimationController#tick(Level)} on the client.
+ * <p>Make sure the code is never accidentally called on the server as it accesses client-only classes.
+ * <p>All animation code in this class is taken from the old <a href="https://www.curseforge.com/minecraft/mc-mods/realbench">RealBench</a> mod.
  */
 public class CraftingTableAnimationController {
     private final Vec3 position;
