@@ -18,13 +18,19 @@ public class VisualResultContainer extends ResultContainer {
     @Override
     public ItemStack removeItem(int slot, int amount) {
         ItemStack result = ContainerHelper.removeItem(this.itemStacks, slot, amount);
-        if (!result.isEmpty()) this.container.setChanged();
+        if (!result.isEmpty()) this.setChanged();
         return result;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
         super.setItem(slot, stack);
+        this.setChanged();
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
         this.container.setChanged();
     }
 

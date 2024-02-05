@@ -2,6 +2,7 @@ package fuzs.visualworkbench.world.level.block.entity;
 
 import fuzs.puzzleslib.api.block.v1.entity.TickingBlockEntity;
 import fuzs.puzzleslib.api.container.v1.ContainerSerializationHelper;
+import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.inventory.VisualCraftingMenu;
 import net.minecraft.core.BlockPos;
@@ -22,12 +23,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements TickingBlockEntity, WorkbenchVisualsProvider {
-    public static final MutableComponent CRAFTING_COMPONENT = Component.translatable("container.crafting");
-    public static final String TAG_RESULT = "Result";
+    public static final MutableComponent COMPONENT_CRAFTING = Component.translatable("container.crafting");
+    public static final String TAG_RESULT = VisualWorkbench.id("result").toString();
 
     private final CraftingTableAnimationController animationController;
-    private NonNullList<ItemStack> items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-    private NonNullList<ItemStack> resultItems = NonNullList.withSize(1, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> items = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemStack> resultItems = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.value(), pos, blockState);
@@ -37,8 +38,8 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     @Override
     public void load(CompoundTag tag) {
         super.load(tag);
-        this.items = NonNullList.withSize(this.getContainerSize(), ItemStack.EMPTY);
-        this.resultItems = NonNullList.withSize(1, ItemStack.EMPTY);
+        this.items.clear();
+        this.resultItems.clear();
         if (!this.tryLoadLootTable(tag)) {
             ContainerHelper.loadAllItems(tag, this.items);
             ContainerSerializationHelper.loadAllItems(TAG_RESULT, tag, this.resultItems);
@@ -80,12 +81,13 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
 
     @Override
     protected void setItems(NonNullList<ItemStack> itemStacks) {
-        this.items = itemStacks;
+        // why does this event exist...
+        throw new UnsupportedOperationException();
     }
 
     @Override
     protected Component getDefaultName() {
-        return CRAFTING_COMPONENT;
+        return COMPONENT_CRAFTING;
     }
 
     @Override
@@ -95,7 +97,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
 
     @Override
     public int getContainerSize() {
-        return 9;
+        return this.items.size();
     }
 
     @Override

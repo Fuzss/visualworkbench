@@ -19,7 +19,6 @@ import net.minecraft.world.phys.Vec3;
  */
 public class CraftingTableAnimationController {
     private final Vec3 position;
-
     public int ticks;
     public float currentAngle;
     public float nextAngle;
@@ -45,7 +44,7 @@ public class CraftingTableAnimationController {
         Player player;
         if (VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients != ClientConfig.RotateIngredients.NEVER) {
             player = level.getNearestPlayer(this.position.x(), this.position.y(), this.position.z(), 3.0, (Entity entity) -> {
-                if (!entity.isSpectator()) {
+                if (entity.isSpectator()) {
                     return false;
                 } else if (VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients == ClientConfig.RotateIngredients.CLOSEST_PLAYER) {
                     return true;

@@ -17,6 +17,8 @@ public class VisualCraftingMenu extends CraftingMenu {
         this.craftSlots = new VisualTransientCraftingContainer(this, 3, 3, blockEntity.getItems(), blockEntity);
         this.resultSlots = new VisualResultContainer(blockEntity.getResultItems(), blockEntity);
         this.setCraftingSlotsContainer();
+        // always update recipe output when opening menu, otherwise could be missing or outdated if the block entity didn't save it correctly
+        this.refreshRecipeResult();
     }
 
     private void setCraftingSlotsContainer() {
@@ -31,15 +33,13 @@ public class VisualCraftingMenu extends CraftingMenu {
         }
     }
 
-    @Override
-    public MenuType<?> getType() {
-        return ModRegistry.CRAFTING_MENU_TYPE.value();
+    private void refreshRecipeResult() {
+        this.slotsChanged(this.craftSlots);
     }
 
     @Override
-    public boolean stillValid(Player player) {
-        // craft slots are extended to forward this to the block entity, normally in vanilla this would always return true
-        return this.craftSlots.stillValid(player);
+    public MenuType<?> getType() {
+        return ModRegistry.CRAFTING_MENU_TYPE.value();
     }
 
     @Override
@@ -49,5 +49,11 @@ public class VisualCraftingMenu extends CraftingMenu {
         this.access = ContainerLevelAccess.NULL;
         super.removed(player);
         this.access = containerLevelAccess;
+    }
+
+    @Override
+    public boolean stillValid(Player player) {
+        // craft slots are extended to forward this to the block entity, normally in vanilla this would always return true
+        return this.craftSlots.stillValid(player);
     }
 }

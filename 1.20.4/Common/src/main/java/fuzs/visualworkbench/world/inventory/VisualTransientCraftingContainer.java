@@ -18,13 +18,19 @@ public class VisualTransientCraftingContainer extends TransientCraftingContainer
     @Override
     public ItemStack removeItem(int slot, int amount) {
         ItemStack itemStack = super.removeItem(slot, amount);
-        if (!itemStack.isEmpty()) this.container.setChanged();
+        if (!itemStack.isEmpty()) this.setChanged();
         return itemStack;
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
         super.setItem(slot, stack);
+        this.setChanged();
+    }
+
+    @Override
+    public void setChanged() {
+        super.setChanged();
         this.container.setChanged();
     }
 
