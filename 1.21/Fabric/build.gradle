@@ -1,0 +1,13 @@
+apply from: "https://raw.githubusercontent.com/Fuzss/modresources/main/gradle/${libs.versions.minecraft.get()}/fabric.gradle"
+
+dependencies {
+    // Fabric Api
+    modApi libs.fabricapi.fabric
+
+    // Puzzles Lib
+    modApi libs.puzzleslib.fabric
+
+    // Just Enough Items
+    compileOnly libs.jeiapi.common
+    modLocalRuntime libs.jei.fabric
+}
