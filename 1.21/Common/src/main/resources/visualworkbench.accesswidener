@@ -2,13 +2,10 @@ accessWidener   v2  named
 accessible  field   net/minecraft/world/level/block/entity/BlockEntityType$Builder  validBlocks Ljava/util/Set;
 mutable field   net/minecraft/world/level/block/entity/BlockEntityType$Builder  validBlocks Ljava/util/Set;
 accessible  field   net/minecraft/world/inventory/CraftingMenu  craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
-mutable field   net/minecraft/world/inventory/CraftingMenu  craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
 accessible  field   net/minecraft/world/inventory/CraftingMenu  resultSlots Lnet/minecraft/world/inventory/ResultContainer;
-mutable field   net/minecraft/world/inventory/CraftingMenu  resultSlots Lnet/minecraft/world/inventory/ResultContainer;
 accessible  field   net/minecraft/world/inventory/CraftingMenu  access Lnet/minecraft/world/inventory/ContainerLevelAccess;
 mutable field   net/minecraft/world/inventory/CraftingMenu  access Lnet/minecraft/world/inventory/ContainerLevelAccess;
+accessible  field   net/minecraft/world/inventory/TransientCraftingContainer    items   Lnet/minecraft/core/NonNullList;
+mutable field   net/minecraft/world/inventory/TransientCraftingContainer    items   Lnet/minecraft/core/NonNullList;
 accessible  field   net/minecraft/world/inventory/ResultContainer   itemStacks  Lnet/minecraft/core/NonNullList;
 mutable field   net/minecraft/world/inventory/ResultContainer   itemStacks  Lnet/minecraft/core/NonNullList;
-accessible  field   net/minecraft/world/inventory/ResultSlot    craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
-mutable field   net/minecraft/world/inventory/ResultSlot    craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
-mutable field   net/minecraft/world/inventory/Slot  container   Lnet/minecraft/world/Container;
