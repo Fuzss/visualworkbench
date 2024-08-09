@@ -52,7 +52,7 @@ public class CraftingTableWithInventoryBlock extends BaseEntityBlock implements 
 
     @Override
     public BlockEntityType<? extends CraftingTableBlockEntity> getBlockEntityType() {
-        return ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.value();
+        return ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value();
     }
 
     @Override

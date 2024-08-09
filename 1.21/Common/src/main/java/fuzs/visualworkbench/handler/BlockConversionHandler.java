@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CraftingTableBlock;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
@@ -44,6 +45,12 @@ public class BlockConversionHandler {
                 return newBlock;
             });
         }
+    }
+
+    public static void onAddBlockEntityTypeBlocks(BiConsumer<BlockEntityType<?>, Block> consumer) {
+        BLOCK_CONVERSIONS.values().forEach((Block block) -> {
+            consumer.accept(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(), block);
+        });
     }
 
     public static EventResultHolder<InteractionResult> onUseBlock(Player player, Level level, InteractionHand interactionHand, BlockHitResult hitResult) {

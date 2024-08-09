@@ -33,7 +33,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     private final NonNullList<ItemStack> resultItems = NonNullList.withSize(1, ItemStack.EMPTY);
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState blockState) {
-        super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY.value(), pos, blockState);
+        super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(), pos, blockState);
         this.animationController = new CraftingTableAnimationController(pos);
     }
 
