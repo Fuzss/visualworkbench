@@ -12,10 +12,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModRegistry {
-    static final RegistryManager REGISTRY = RegistryManager.from(VisualWorkbench.MOD_ID);
-    public static final Holder.Reference<BlockEntityType<CraftingTableBlockEntity>> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = REGISTRY.registerBlockEntityType(
+    static final RegistryManager REGISTRIES = RegistryManager.from(VisualWorkbench.MOD_ID);
+    public static final Holder.Reference<BlockEntityType<CraftingTableBlockEntity>> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = REGISTRIES.registerBlockEntityType(
             "crafting_table", () -> BlockEntityType.Builder.of(CraftingTableBlockEntity::new));
-    public static final Holder.Reference<MenuType<VisualCraftingMenu>> CRAFTING_MENU_TYPE = REGISTRY.registerMenuType(
+    public static final Holder.Reference<MenuType<VisualCraftingMenu>> CRAFTING_MENU_TYPE = REGISTRIES.registerMenuType(
             "crafting", () -> VisualCraftingMenu::new);
 
     static final BoundTagFactory TAGS = BoundTagFactory.make(VisualWorkbench.MOD_ID);

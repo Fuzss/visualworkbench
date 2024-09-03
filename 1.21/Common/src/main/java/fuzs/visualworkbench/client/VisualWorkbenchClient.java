@@ -34,11 +34,15 @@ public class VisualWorkbenchClient implements ClientModConstructor {
 
     @Override
     public void onRegisterBlockEntityRenderers(BlockEntityRenderersContext context) {
-        context.registerBlockEntityRenderer(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(), CraftingTableBlockEntityRenderer::new);
+        context.registerBlockEntityRenderer(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(),
+                CraftingTableBlockEntityRenderer::new
+        );
     }
 
     @Override
     public void onAddResourcePackFinders(PackRepositorySourcesContext context) {
-        context.addRepositorySource(PackResourcesHelper.buildClientPack(VisualWorkbench.id("default_block_models"), DynamicPackResources.create(DynamicModelProvider::new), true));
+        context.addRepositorySource(PackResourcesHelper.buildClientPack(VisualWorkbench.id("default_block_models"),
+                DynamicPackResources.create(DynamicModelProvider::new), true
+        ));
     }
 }
