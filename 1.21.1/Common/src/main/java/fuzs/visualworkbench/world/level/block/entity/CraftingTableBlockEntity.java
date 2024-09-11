@@ -1,7 +1,7 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
 import fuzs.puzzleslib.api.block.v1.entity.TickingBlockEntity;
-import fuzs.puzzleslib.api.container.v1.ContainerItemHelper;
+import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
 import fuzs.puzzleslib.api.container.v1.ContainerSerializationHelper;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.init.ModRegistry;
@@ -83,7 +83,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
 
     @Override
     protected void setItems(NonNullList<ItemStack> items) {
-        ContainerItemHelper.copyItemsToContainer(this, items);
+        ContainerMenuHelper.copyItemsIntoContainer(items, this);
     }
 
     @Override
