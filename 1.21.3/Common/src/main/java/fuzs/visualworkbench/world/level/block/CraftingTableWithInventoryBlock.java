@@ -1,7 +1,6 @@
 package fuzs.visualworkbench.world.level.block;
 
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import fuzs.puzzleslib.api.block.v1.entity.TickingEntityBlock;
 import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
@@ -13,31 +12,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BlockTypes;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.function.Predicate;
 
 public class CraftingTableWithInventoryBlock extends BaseEntityBlock implements TickingEntityBlock<CraftingTableBlockEntity> {
-    public static final MapCodec<CraftingTableWithInventoryBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(BlockTypes.CODEC.fieldOf("block").forGetter(block -> block.block)).apply(instance, CraftingTableWithInventoryBlock::new)
-    );
+    public static final MapCodec<CraftingTableWithInventoryBlock> CODEC = simpleCodec(CraftingTableWithInventoryBlock::new);
 
-    private final Block block;
-
-    public CraftingTableWithInventoryBlock(Block block) {
-        super(BlockBehaviour.Properties.ofFullCopy(block).dropsLike(block));
-        this.block = block;
-    }
-
-    @Override
-    public String getDescriptionId() {
-        return this.block.getDescriptionId();
+    public CraftingTableWithInventoryBlock(Properties properties) {
+        super(properties);
     }
 
     @Override

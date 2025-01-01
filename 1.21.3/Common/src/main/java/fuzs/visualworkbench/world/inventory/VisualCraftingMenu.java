@@ -64,7 +64,7 @@ public class VisualCraftingMenu extends CraftingMenu implements ContainerListene
     @Override
     public void slotChanged(AbstractContainerMenu containerToSend, int dataSlotIndex, ItemStack itemStack) {
         this.access.execute((Level level, BlockPos blockPos) -> {
-            if (dataSlotIndex >= 0 && dataSlotIndex < this.getSize()) {
+            if (dataSlotIndex >= 0 && dataSlotIndex < 10) {
                 this.blockEntity.setChanged();
             }
         });
