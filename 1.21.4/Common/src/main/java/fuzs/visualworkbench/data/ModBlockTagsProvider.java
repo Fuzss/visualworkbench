@@ -16,6 +16,6 @@ public class ModBlockTagsProvider extends AbstractTagProvider<Block> {
 
     @Override
     public void addTags(HolderLookup.Provider provider) {
-        this.add(ModRegistry.UNALTERED_WORKBENCHES_BLOCK_TAG).add(Blocks.SMITHING_TABLE, Blocks.FLETCHING_TABLE);
+        this.tag(ModRegistry.UNALTERED_WORKBENCHES_BLOCK_TAG).add(Blocks.SMITHING_TABLE, Blocks.FLETCHING_TABLE);
     }
 }

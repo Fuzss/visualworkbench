@@ -1,30 +1,78 @@
 package fuzs.visualworkbench.client;
 
+import fuzs.puzzleslib.api.client.core.v1.ClientAbstractions;
 import fuzs.puzzleslib.api.client.core.v1.ClientModConstructor;
 import fuzs.puzzleslib.api.client.core.v1.context.BlockEntityRenderersContext;
+import fuzs.puzzleslib.api.client.core.v1.context.BlockStateResolverContext;
 import fuzs.puzzleslib.api.client.core.v1.context.MenuScreensContext;
-import fuzs.puzzleslib.api.client.event.v1.ModelEvents;
-import fuzs.puzzleslib.api.core.v1.context.PackRepositorySourcesContext;
-import fuzs.puzzleslib.api.event.v1.LoadCompleteCallback;
-import fuzs.puzzleslib.api.resources.v1.DynamicPackResources;
-import fuzs.puzzleslib.api.resources.v1.PackResourcesHelper;
+import fuzs.puzzleslib.api.client.event.v1.ClientStartedCallback;
+import fuzs.puzzleslib.api.client.util.v1.ModelLoadingHelper;
 import fuzs.visualworkbench.VisualWorkbench;
-import fuzs.visualworkbench.client.handler.BlockModelHandler;
+import fuzs.visualworkbench.client.handler.BlockStateTranslator;
 import fuzs.visualworkbench.client.renderer.blockentity.CraftingTableBlockEntityRenderer;
-import fuzs.visualworkbench.data.client.DynamicModelProvider;
+import fuzs.visualworkbench.handler.BlockConversionHandler;
 import fuzs.visualworkbench.init.ModRegistry;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.CraftingScreen;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.renderer.block.model.UnbakedBlockStateModel;
+import net.minecraft.client.resources.model.BlockStateModelLoader;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.Map;
 
 public class VisualWorkbenchClient implements ClientModConstructor {
 
     @Override
     public void onConstructMod() {
-        registerHandlers();
+        registerEventHandlers();
     }
 
-    private static void registerHandlers() {
-        ModelEvents.MODIFY_UNBAKED_MODEL.register(BlockModelHandler::onModifyUnbakedModel);
-        LoadCompleteCallback.EVENT.register(BlockModelHandler::onLoadComplete);
+    private static void registerEventHandlers() {
+        ClientStartedCallback.EVENT.register((Minecraft minecraft) -> {
+            // run a custom implementation here, the appropriate method in client mod constructor runs together with other mods, so we might miss some entries
+            for (Map.Entry<Block, Block> entry : BlockConversionHandler.getBlockConversions().entrySet()) {
+                RenderType renderType = ClientAbstractions.INSTANCE.getRenderType(entry.getKey());
+                ClientAbstractions.INSTANCE.registerRenderType(entry.getValue(), renderType);
+            }
+        });
+    }
+
+    @Override
+    public void onRegisterBlockStateResolver(BlockStateResolverContext context) {
+        ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+        BlockStateTranslator blockStateTranslator = new BlockStateTranslator();
+        BlockConversionHandler.getBlockConversions().forEach((Block oldBlock, Block newBlock) -> {
+            context.registerBlockStateResolver(newBlock, consumer -> {
+                BlockStateModelLoader.LoadedModels loadedModels = ModelLoadingHelper.loadBlockState(resourceManager,
+                        oldBlock);
+                Map<ModelResourceLocation, ModelResourceLocation> modelResourceLocations = blockStateTranslator.convertAllBlockStates(
+                        newBlock,
+                        oldBlock);
+                for (BlockState blockState : newBlock.getStateDefinition().getPossibleStates()) {
+                    ModelResourceLocation newModelResourceLocation = BlockModelShaper.stateToModelLocation(blockState);
+                    ModelResourceLocation oldModelResourceLocation = modelResourceLocations.get(newModelResourceLocation);
+                    UnbakedBlockStateModel model = null;
+                    if (oldModelResourceLocation != null) {
+                        BlockStateModelLoader.LoadedModel loadedModel = loadedModels.models()
+                                .get(oldModelResourceLocation);
+                        if (loadedModel != null) {
+                            model = loadedModel.model();
+                        }
+                    }
+                    if (model != null) {
+                        consumer.accept(blockState, model);
+                    } else {
+                        VisualWorkbench.LOGGER.warn("Missing model for variant: '{}'", newModelResourceLocation);
+                        consumer.accept(blockState, ModelLoadingHelper.missingModel());
+                    }
+                }
+            });
+        });
     }
 
     @Override
@@ -35,14 +83,6 @@ public class VisualWorkbenchClient implements ClientModConstructor {
     @Override
     public void onRegisterBlockEntityRenderers(BlockEntityRenderersContext context) {
         context.registerBlockEntityRenderer(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(),
-                CraftingTableBlockEntityRenderer::new
-        );
-    }
-
-    @Override
-    public void onAddResourcePackFinders(PackRepositorySourcesContext context) {
-        context.addRepositorySource(PackResourcesHelper.buildClientPack(VisualWorkbench.id("default_block_models"),
-                DynamicPackResources.create(DynamicModelProvider::new), true
-        ));
+                CraftingTableBlockEntityRenderer::new);
     }
 }

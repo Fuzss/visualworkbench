@@ -1,6 +1,6 @@
 accessWidener   v2  named
-accessible  field   net/minecraft/world/inventory/CraftingMenu  craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
-accessible  field   net/minecraft/world/inventory/CraftingMenu  resultSlots Lnet/minecraft/world/inventory/ResultContainer;
+accessible  field   net/minecraft/world/inventory/AbstractCraftingMenu  craftSlots  Lnet/minecraft/world/inventory/CraftingContainer;
+accessible  field   net/minecraft/world/inventory/AbstractCraftingMenu  resultSlots Lnet/minecraft/world/inventory/ResultContainer;
 accessible  field   net/minecraft/world/inventory/CraftingMenu  access Lnet/minecraft/world/inventory/ContainerLevelAccess;
 mutable field   net/minecraft/world/inventory/CraftingMenu  access Lnet/minecraft/world/inventory/ContainerLevelAccess;
 accessible  field   net/minecraft/world/inventory/TransientCraftingContainer    items   Lnet/minecraft/core/NonNullList;
