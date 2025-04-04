@@ -34,7 +34,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState blockState) {
         super(ModRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE.value(), pos, blockState);
-        this.animationController = new CraftingTableAnimationController(pos);
+        this.animationController = WorkbenchVisualsProvider.createAnimationController(pos);
     }
 
     @Override
@@ -96,8 +96,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
         return new VisualCraftingMenu(containerId,
                 inventory,
                 this,
-                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos())
-        );
+                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()));
     }
 
     @Override

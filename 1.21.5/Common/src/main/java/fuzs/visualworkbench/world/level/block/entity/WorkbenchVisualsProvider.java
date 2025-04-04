@@ -1,9 +1,14 @@
 package fuzs.visualworkbench.world.level.block.entity;
 
+import fuzs.puzzleslib.api.core.v1.ModLoaderEnvironment;
+import fuzs.visualworkbench.client.renderer.blockentity.ClientCraftingTableAnimationController;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 /**
- * An extension for a {@link net.minecraft.world.level.block.entity.BlockEntity} providing access to data required for rendering.
+ * An extension for a {@link net.minecraft.world.level.block.entity.BlockEntity} providing access to data required for
+ * rendering.
  */
 public interface WorkbenchVisualsProvider {
 
@@ -19,4 +24,26 @@ public interface WorkbenchVisualsProvider {
      * @return storage for animation data
      */
     CraftingTableAnimationController getAnimationController();
+
+    /**
+     * @param blockPos the position of the block entity
+     * @return the animation controller
+     */
+    static CraftingTableAnimationController createAnimationController(BlockPos blockPos) {
+        if (ModLoaderEnvironment.INSTANCE.isClient()) {
+            return new ClientCraftingTableAnimationController(blockPos);
+        } else {
+            return new CraftingTableAnimationController() {
+                @Override
+                public void tick(Level level) {
+                    // NO-OP
+                }
+
+                @Override
+                public RenderState renderState() {
+                    return new RenderState();
+                }
+            };
+        }
+    }
 }
