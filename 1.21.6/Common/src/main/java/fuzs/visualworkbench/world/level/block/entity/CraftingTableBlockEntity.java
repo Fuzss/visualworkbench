@@ -2,9 +2,9 @@ package fuzs.visualworkbench.world.level.block.entity;
 
 import fuzs.puzzleslib.api.block.v1.entity.TickingBlockEntity;
 import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
-import fuzs.puzzleslib.api.container.v1.ContainerSerializationHelper;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.init.ModRegistry;
+import fuzs.visualworkbench.util.ContainerSerializationHelper;
 import fuzs.visualworkbench.world.inventory.VisualCraftingMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.Container;
-import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -22,6 +22,8 @@ import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity implements TickingBlockEntity, WorkbenchVisualsProvider {
@@ -38,22 +40,22 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registries) {
-        super.loadAdditional(tag, registries);
-        this.items.clear();
-        this.resultItems.clear();
-        if (!this.tryLoadLootTable(tag)) {
-            ContainerHelper.loadAllItems(tag, this.items, registries);
-            ContainerSerializationHelper.loadAllItems(TAG_RESULT, tag, this.resultItems, registries);
+    public void loadAdditional(ValueInput valueInput) {
+        super.loadAdditional(valueInput);
+        if (!this.tryLoadLootTable(valueInput)) {
+            ContainerSerializationHelper.loadAllItems(valueInput, this.items);
+            ContainerSerializationHelper.fromSlots(this.resultItems,
+                    valueInput.listOrEmpty(TAG_RESULT, ItemStackWithSlot.CODEC));
         }
     }
 
     @Override
-    protected void saveAdditional(CompoundTag compoundTag, HolderLookup.Provider registries) {
-        super.saveAdditional(compoundTag, registries);
-        if (!this.trySaveLootTable(compoundTag)) {
-            ContainerHelper.saveAllItems(compoundTag, this.items, registries);
-            ContainerSerializationHelper.saveAllItems(TAG_RESULT, compoundTag, this.resultItems, registries);
+    protected void saveAdditional(ValueOutput valueOutput) {
+        super.saveAdditional(valueOutput);
+        if (!this.trySaveLootTable(valueOutput)) {
+            ContainerSerializationHelper.saveAllItems(valueOutput, this.items);
+            ContainerSerializationHelper.storeAsSlots(this.resultItems,
+                    valueOutput.list(TAG_RESULT, ItemStackWithSlot.CODEC));
         }
     }
 

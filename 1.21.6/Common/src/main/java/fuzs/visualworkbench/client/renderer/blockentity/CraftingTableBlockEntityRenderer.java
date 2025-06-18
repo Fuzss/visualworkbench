@@ -22,8 +22,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
-import static net.minecraft.client.renderer.entity.ItemEntityRenderer.calculateModelBoundingBox;
-
 public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container & WorkbenchVisualsProvider> implements BlockEntityRenderer<T> {
     private final ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
     private final ItemRenderer itemRenderer;
@@ -101,8 +99,8 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
 
     private void setupFloatingRenderer(CraftingTableAnimationController.RenderState renderState, boolean isBlockItem, float partialTick, PoseStack poseStack, int index) {
         // -0.0125 to 0.0125
-        float shift = (float) Math.abs(((renderState.ticks + partialTick) * 50.0 + (index * 1000L)) % 5000L - 2500L) /
-                200000.0F;
+        float shift = (float) Math.abs(((renderState.ticks + partialTick) * 50.0 + (index * 1000L)) % 5000L - 2500L)
+                / 200000.0F;
         poseStack.translate(0.5, shift, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTick,
                 renderState.currentAngle,
@@ -139,7 +137,7 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
         poseStack.pushPose();
         poseStack.translate(0.5F, 1.15F, 0.5F);
         float hoverOffset = Mth.sin(time / 10.0F) * 0.04F + 0.1F;
-        AABB aABB = calculateModelBoundingBox(this.itemStackRenderState);
+        AABB aABB = this.itemStackRenderState.getModelBoundingBox();
         float modelYScale = -((float) aABB.minY) + 0.0625F;
         poseStack.translate(0.0, hoverOffset + modelYScale, 0.0);
         poseStack.mulPose(Axis.YP.rotation(time / 20.0F));
@@ -151,6 +149,6 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
     }
 
     static boolean isGui3d(ItemStackRenderState renderState) {
-        return calculateModelBoundingBox(renderState).getZsize() > 0.0625;
+        return renderState.getModelBoundingBox().getZsize() > 0.0625;
     }
 }

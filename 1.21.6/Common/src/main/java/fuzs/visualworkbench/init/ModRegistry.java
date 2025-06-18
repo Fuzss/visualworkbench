@@ -21,7 +21,7 @@ public class ModRegistry {
             Collections::emptySet);
     public static final Holder.Reference<MenuType<VisualCraftingMenu>> CRAFTING_MENU_TYPE = REGISTRIES.registerMenuType(
             "crafting",
-            () -> VisualCraftingMenu::new);
+            VisualCraftingMenu::new);
 
     static final TagFactory TAGS = TagFactory.make(VisualWorkbench.MOD_ID);
     public static final TagKey<Block> UNALTERED_WORKBENCHES_BLOCK_TAG = TAGS.registerBlockTag("unaltered_workbenches");
