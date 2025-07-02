@@ -8,3 +8,9 @@ dependencies {
 //    compileOnly libs.jeiapi.common
 //    modLocalRuntime libs.jei.neoforge
 }
+
+tasks.withType(net.fabricmc.loom.task.AbstractRunTask).configureEach {
+    doFirst {
+        patchLaunchCfg()
+    }
+}
