@@ -69,6 +69,37 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        ItemStack itemStackInSlot = this.items.get(slot);
+        if (itemStackInSlot.isEmpty()) {
+            return !this.smallerStackExist(stack.getMaxStackSize(), stack, -1);
+        } else {
+            return !this.smallerStackExist(itemStackInSlot.getCount(), itemStackInSlot, slot);
+        }
+    }
+
+    /**
+     * @see net.minecraft.world.level.block.entity.CrafterBlockEntity#smallerStackExist(int, ItemStack, int)
+     */
+    private boolean smallerStackExist(int currentSize, ItemStack itemStackInSlot, int slot) {
+        for (int i = slot + 1; i < this.getContainerSize(); i++) {
+            ItemStack itemStack = this.getItem(i);
+            if (!itemStack.isEmpty() && itemStack.getCount() < currentSize && ItemStack.isSameItemSameComponents(
+                    itemStack,
+                    itemStackInSlot)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItem(Container target, int slot, ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public void setChanged() {
         super.setChanged();
         if (this.level != null) {

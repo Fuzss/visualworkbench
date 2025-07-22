@@ -2,9 +2,9 @@ package fuzs.visualworkbench.world.level.block.entity;
 
 import fuzs.puzzleslib.api.block.v1.entity.TickingBlockEntity;
 import fuzs.puzzleslib.api.container.v1.ContainerMenuHelper;
+import fuzs.puzzleslib.api.container.v1.ContainerSerializationHelper;
 import fuzs.visualworkbench.VisualWorkbench;
 import fuzs.visualworkbench.init.ModRegistry;
-import fuzs.visualworkbench.util.ContainerSerializationHelper;
 import fuzs.visualworkbench.world.inventory.VisualCraftingMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -71,6 +71,37 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
     }
 
     @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        ItemStack itemStackInSlot = this.items.get(slot);
+        if (itemStackInSlot.isEmpty()) {
+            return !this.smallerStackExist(stack.getMaxStackSize(), stack, -1);
+        } else {
+            return !this.smallerStackExist(itemStackInSlot.getCount(), itemStackInSlot, slot);
+        }
+    }
+
+    /**
+     * @see net.minecraft.world.level.block.entity.CrafterBlockEntity#smallerStackExist(int, ItemStack, int)
+     */
+    private boolean smallerStackExist(int currentSize, ItemStack itemStackInSlot, int slot) {
+        for (int i = slot + 1; i < this.getContainerSize(); i++) {
+            ItemStack itemStack = this.getItem(i);
+            if (!itemStack.isEmpty() && itemStack.getCount() < currentSize && ItemStack.isSameItemSameComponents(
+                    itemStack,
+                    itemStackInSlot)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItem(Container target, int slot, ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public void setChanged() {
         super.setChanged();
         if (this.level != null) {
@@ -122,7 +153,7 @@ public class CraftingTableBlockEntity extends RandomizableContainerBlockEntity i
 
     @Override
     public ItemStack getCraftingResult() {
-        return this.resultItems.get(0);
+        return this.resultItems.getFirst();
     }
 
     @Override

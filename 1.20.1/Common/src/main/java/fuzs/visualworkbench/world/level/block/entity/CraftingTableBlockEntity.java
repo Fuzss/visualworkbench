@@ -10,6 +10,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -80,6 +81,36 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     }
 
     @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        ItemStack itemStackInSlot = this.inventory.get(slot);
+        if (itemStackInSlot.isEmpty()) {
+            return !this.smallerStackExist(stack.getMaxStackSize(), stack, -1);
+        } else {
+            return !this.smallerStackExist(itemStackInSlot.getCount(), itemStackInSlot, slot);
+        }
+    }
+
+    /**
+     * @see net.minecraft.world.level.block.entity.CrafterBlockEntity#smallerStackExist(int, ItemStack, int)
+     */
+    private boolean smallerStackExist(int currentSize, ItemStack itemStackInSlot, int slot) {
+        for (int i = slot + 1; i < this.getContainerSize(); i++) {
+            ItemStack itemStack = this.getItem(i);
+            if (!itemStack.isEmpty() && itemStack.getCount() < currentSize && ItemStack.isSameItemSameTags(itemStack,
+                    itemStackInSlot)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public boolean canTakeItem(Container target, int slot, ItemStack stack) {
+        return false;
+    }
+
+    @Override
     public void setChanged() {
         super.setChanged();
         if (this.level != null) {
@@ -141,13 +172,19 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
         if (this.getLevel().getBlockEntity(this.worldPosition) != this) {
             return false;
         } else {
-            return !(player.distanceToSqr((double)this.worldPosition.getX() + 0.5D, (double)this.worldPosition.getY() + 0.5D, (double)this.worldPosition.getZ() + 0.5D) > 64.0D);
+            return !(player.distanceToSqr((double) this.worldPosition.getX() + 0.5D,
+                    (double) this.worldPosition.getY() + 0.5D,
+                    (double) this.worldPosition.getZ() + 0.5D) > 64.0D);
         }
     }
 
     @Override
     protected AbstractContainerMenu createMenu(int id, Inventory playerInventory) {
-        return new ModCraftingMenu(id, playerInventory, this, ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()), this::setLastResult);
+        return new ModCraftingMenu(id,
+                playerInventory,
+                this,
+                ContainerLevelAccess.create(this.getLevel(), this.getBlockPos()),
+                this::setLastResult);
     }
 
     @Override
@@ -167,10 +204,14 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
     public static void clientTick(Level level, BlockPos pos, BlockState state, CraftingTableBlockEntity blockEntity) {
         ++blockEntity.ticks;
         if (blockEntity.isEmpty() || !VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients) return;
-        Player player = level.getNearestPlayer((double)blockEntity.worldPosition.getX() + 0.5D, (double)blockEntity.worldPosition.getY() + 0.5D, (double)blockEntity.worldPosition.getZ() + 0.5D, 3.0D, false);
+        Player player = level.getNearestPlayer((double) blockEntity.worldPosition.getX() + 0.5D,
+                (double) blockEntity.worldPosition.getY() + 0.5D,
+                (double) blockEntity.worldPosition.getZ() + 0.5D,
+                3.0D,
+                false);
         if (player != null) {
-            double d0 = player.getX() - ((double)blockEntity.worldPosition.getX() + 0.5D);
-            double d1 = player.getZ() - ((double)blockEntity.worldPosition.getZ() + 0.5D);
+            double d0 = player.getX() - ((double) blockEntity.worldPosition.getX() + 0.5D);
+            double d1 = player.getZ() - ((double) blockEntity.worldPosition.getZ() + 0.5D);
             blockEntity.playerAngle = (Math.atan2(-d0, -d1) + 3.9269908169872414D) % 6.283185307179586D;
         }
         // most animation code is taken from the old RealBench mod (https://www.curseforge.com/minecraft/mc-mods/realbench)
@@ -199,8 +240,15 @@ public class CraftingTableBlockEntity extends BaseContainerBlockEntity {
                 blockEntity.animating = false;
                 blockEntity.currentAngle = blockEntity.nextAngle = (blockEntity.animationAngleEnd + 360.0F) % 360.0F;
             } else {
-                blockEntity.currentAngle = (MathHelper.easeOutQuad(blockEntity.ticks - blockEntity.startTicks, blockEntity.animationAngleStart, blockEntity.animationAngleEnd - blockEntity.animationAngleStart, 20.0) + 360.0F) % 360.0F;
-                blockEntity.nextAngle = (MathHelper.easeOutQuad(Math.min(blockEntity.ticks + 1 - blockEntity.startTicks, 20), blockEntity.animationAngleStart, blockEntity.animationAngleEnd - blockEntity.animationAngleStart, 20.0) + 360.0F) % 360.0F;
+                blockEntity.currentAngle = (MathHelper.easeOutQuad(blockEntity.ticks - blockEntity.startTicks,
+                        blockEntity.animationAngleStart,
+                        blockEntity.animationAngleEnd - blockEntity.animationAngleStart,
+                        20.0) + 360.0F) % 360.0F;
+                blockEntity.nextAngle =
+                        (MathHelper.easeOutQuad(Math.min(blockEntity.ticks + 1 - blockEntity.startTicks, 20),
+                                blockEntity.animationAngleStart,
+                                blockEntity.animationAngleEnd - blockEntity.animationAngleStart,
+                                20.0) + 360.0F) % 360.0F;
                 if (blockEntity.currentAngle != 0.0F || blockEntity.nextAngle != 0.0F) {
                     if (blockEntity.currentAngle == 0.0F && blockEntity.nextAngle >= 180.0F) {
                         blockEntity.currentAngle = 360.0F;
