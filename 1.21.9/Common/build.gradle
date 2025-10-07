@@ -8,6 +8,3 @@ dependencies {
 //    compileOnly libs.jeiapi.common
 }
 
-tasks.withType(net.fabricmc.loom.task.AbstractRemapJarTask).configureEach {
-    targetNamespace = "named"
-}
