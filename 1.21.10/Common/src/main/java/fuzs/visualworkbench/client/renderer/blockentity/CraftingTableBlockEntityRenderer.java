@@ -58,14 +58,14 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
 
         renderState.items = new ArrayList<>();
         if (VisualWorkbench.CONFIG.get(ClientConfig.class).ingredientRendering != ClientConfig.IngredientRendering.NONE) {
-            for (int j = 0; j < blockEntity.getContainerSize(); j++) {
+            for (int i = 0; i < blockEntity.getContainerSize(); i++) {
                 ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
                 this.itemModelResolver.updateForTopItem(itemStackRenderState,
-                        blockEntity.getItem(j),
+                        blockEntity.getItem(i),
                         ItemDisplayContext.FIXED,
                         blockEntity.getLevel(),
                         null,
-                        position + j);
+                        position + i);
                 renderState.items.add(itemStackRenderState);
             }
         }
