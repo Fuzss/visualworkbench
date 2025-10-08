@@ -40,8 +40,18 @@ public interface WorkbenchVisualsProvider {
                 }
 
                 @Override
-                public RenderState renderState() {
-                    return new RenderState();
+                public int getTime() {
+                    return 0;
+                }
+
+                @Override
+                public float getCurrentAngle() {
+                    return 0.0F;
+                }
+
+                @Override
+                public float getNextAngle() {
+                    return 0.0F;
                 }
             };
         }

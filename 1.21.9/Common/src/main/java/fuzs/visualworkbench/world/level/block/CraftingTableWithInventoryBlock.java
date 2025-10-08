@@ -5,6 +5,7 @@ import fuzs.puzzleslib.api.block.v1.entity.TickingEntityBlock;
 import fuzs.visualworkbench.init.ModRegistry;
 import fuzs.visualworkbench.world.level.block.entity.CraftingTableBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.Containers;
@@ -44,7 +45,7 @@ public class CraftingTableWithInventoryBlock extends BaseEntityBlock implements 
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hitResult) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else if (level.getBlockEntity(pos) instanceof CraftingTableBlockEntity blockEntity) {
             player.openMenu(blockEntity);
@@ -65,7 +66,7 @@ public class CraftingTableWithInventoryBlock extends BaseEntityBlock implements 
     }
 
     @Override
-    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos) {
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos blockPos, Direction direction) {
         // similar to Crafter
         if (level.getBlockEntity(blockPos) instanceof CraftingTableBlockEntity blockEntity) {
             return (int) blockEntity.getItems().stream().filter(Predicate.not(ItemStack::isEmpty)).count();

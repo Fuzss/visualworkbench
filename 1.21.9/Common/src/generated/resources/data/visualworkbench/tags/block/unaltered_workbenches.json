@@ -1,6 +1,6 @@
 {
   "values": [
-    "minecraft:smithing_table",
-    "minecraft:fletching_table"
+    "minecraft:fletching_table",
+    "minecraft:smithing_table"
   ]
 }

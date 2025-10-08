@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
  * href="https://www.curseforge.com/minecraft/mc-mods/realbench">RealBench</a> mod.
  */
 public final class ClientCraftingTableAnimationController implements CraftingTableAnimationController {
-    private final RenderState renderState = new RenderState();
     private final Vec3 position;
     private int sector;
     private boolean animating;
@@ -26,6 +25,9 @@ public final class ClientCraftingTableAnimationController implements CraftingTab
     private float animationAngleEnd;
     private double startTicks;
     private double playerAngle;
+    private int time;
+    private float currentAngle;
+    private float nextAngle;
 
     public ClientCraftingTableAnimationController(BlockPos blockPos) {
         this.position = blockPos.getCenter();
@@ -33,19 +35,32 @@ public final class ClientCraftingTableAnimationController implements CraftingTab
 
     @Override
     public void tick(Level level) {
-        ++this.renderState.ticks;
-        this.setPlayerAngle(level);
-        this.setCurrentSector(this.renderState);
-        this.updateAnimationAngles(this.renderState);
+        ++this.time;
+        if (VisualWorkbench.CONFIG.get(ClientConfig.class).ingredientRendering
+                != ClientConfig.IngredientRendering.NONE) {
+            this.setPlayerAngle(level);
+            this.setCurrentSector();
+            this.updateAnimationAngles();
+        }
     }
 
     @Override
-    public RenderState renderState() {
-        return this.renderState;
+    public int getTime() {
+        return this.time;
+    }
+
+    @Override
+    public float getCurrentAngle() {
+        return this.currentAngle;
+    }
+
+    @Override
+    public float getNextAngle() {
+        return this.nextAngle;
     }
 
     private void setPlayerAngle(Level level) {
-        Player player = this.getPlayer(level, VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients);
+        Player player = this.getPlayer(level);
         if (player != null) {
             double d0 = player.getX() - this.position.x();
             double d1 = player.getZ() - this.position.z();
@@ -54,7 +69,8 @@ public final class ClientCraftingTableAnimationController implements CraftingTab
     }
 
     @Nullable
-    private Player getPlayer(Level level, ClientConfig.RotateIngredients rotateIngredients) {
+    private Player getPlayer(Level level) {
+        ClientConfig.RotateIngredients rotateIngredients = VisualWorkbench.CONFIG.get(ClientConfig.class).rotateIngredients;
         if (rotateIngredients != ClientConfig.RotateIngredients.NEVER) {
             return level.getNearestPlayer(this.position.x(),
                     this.position.y(),
@@ -79,49 +95,51 @@ public final class ClientCraftingTableAnimationController implements CraftingTab
         }
     }
 
-    private void setCurrentSector(RenderState renderState) {
+    private void setCurrentSector() {
         int sector = (int) (this.playerAngle * 2.0 / Math.PI);
         if (this.sector != sector) {
             this.animating = true;
-            this.animationAngleStart = renderState.currentAngle;
-            float delta1 = sector * 90.0F - renderState.currentAngle;
+            this.animationAngleStart = this.currentAngle;
+            float delta1 = sector * 90.0F - this.currentAngle;
             float abs1 = Math.abs(delta1);
             float delta2 = delta1 + 360.0F;
             float shift = Math.abs(delta2);
             float delta3 = delta1 - 360.0F;
             float abs3 = Math.abs(delta3);
             if (abs3 < abs1 && abs3 < shift) {
-                this.animationAngleEnd = delta3 + renderState.currentAngle;
+                this.animationAngleEnd = delta3 + this.currentAngle;
             } else if (shift < abs1 && shift < abs3) {
-                this.animationAngleEnd = delta2 + renderState.currentAngle;
+                this.animationAngleEnd = delta2 + this.currentAngle;
             } else {
-                this.animationAngleEnd = delta1 + renderState.currentAngle;
+                this.animationAngleEnd = delta1 + this.currentAngle;
             }
-            this.startTicks = renderState.ticks;
+
+            this.startTicks = this.time;
             this.sector = sector;
         }
     }
 
-    private void updateAnimationAngles(RenderState renderState) {
+    private void updateAnimationAngles() {
         if (this.animating) {
-            if (renderState.ticks >= this.startTicks + 20) {
+            if (this.time >= this.startTicks + 20) {
                 this.animating = false;
-                renderState.currentAngle = renderState.nextAngle = (this.animationAngleEnd + 360.0F) % 360.0F;
+                this.currentAngle = this.nextAngle = (this.animationAngleEnd + 360.0F) % 360.0F;
             } else {
-                renderState.currentAngle = (calcEaseOutQuad(renderState.ticks - this.startTicks,
+                this.currentAngle = (calcEaseOutQuad(this.time - this.startTicks,
                         this.animationAngleStart,
                         this.animationAngleEnd - this.animationAngleStart,
                         20.0) + 360.0F) % 360.0F;
-                renderState.nextAngle = (calcEaseOutQuad(Math.min(renderState.ticks + 1 - this.startTicks, 20),
+                this.nextAngle = (calcEaseOutQuad(Math.min(this.time + 1 - this.startTicks, 20),
                         this.animationAngleStart,
                         this.animationAngleEnd - this.animationAngleStart,
                         20.0) + 360.0F) % 360.0F;
-                if (renderState.currentAngle != 0.0F || renderState.nextAngle != 0.0F) {
-                    if (renderState.currentAngle == 0.0F && renderState.nextAngle >= 180.0F) {
-                        renderState.currentAngle = 360.0F;
+                if (this.currentAngle != 0.0F || this.nextAngle != 0.0F) {
+                    if (this.currentAngle == 0.0F && this.nextAngle >= 180.0F) {
+                        this.currentAngle = 360.0F;
                     }
-                    if (renderState.nextAngle == 0.0F && renderState.currentAngle >= 180.0F) {
-                        renderState.nextAngle = 360.0F;
+
+                    if (this.nextAngle == 0.0F && this.currentAngle >= 180.0F) {
+                        this.nextAngle = 360.0F;
                     }
                 }
             }
