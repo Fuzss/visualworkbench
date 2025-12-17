@@ -1,0 +1,61 @@
+{
+    "mod": {
+        "id": "visualworkbench",
+        "group": "fuzs.visualworkbench",
+        "name": "Visual Workbench",
+        "version": "21.11.0",
+        "authors": [
+            "Fuzs"
+        ],
+        "description": "Items stay inside crafting tables and are also rendered on top. It's really fancy!",
+        "license": "MPL-2.0"
+    },
+    "dependencies": [
+        {
+            "name": "fabricapi",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "forgeconfigapiport",
+            "type": "required",
+            "platforms": [
+                "fabric"
+            ]
+        },
+        {
+            "name": "puzzleslib",
+            "type": "required",
+            "platforms": [
+                "fabric",
+                "neoforge"
+            ]
+        }
+    ],
+    "links": [
+        {
+            "name": "github",
+            "slug": "visualworkbench"
+        },
+        {
+            "name": "curseforge",
+            "slug": "visual-workbench",
+            "id": "500273"
+        },
+        {
+            "name": "modrinth",
+            "slug": "visual-workbench",
+            "id": "kfqD1JRw"
+        }
+    ],
+    "environments": {
+        "client": "required",
+        "server": "required"
+    },
+    "platforms": [
+        "fabric",
+        "neoforge"
+    ]
+}

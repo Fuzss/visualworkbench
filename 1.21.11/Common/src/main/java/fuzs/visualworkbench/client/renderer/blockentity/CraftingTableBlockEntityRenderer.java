@@ -22,7 +22,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
     }
 
     @Override
-    public void extractRenderState(T blockEntity, CraftingTableRenderState renderState, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+    public void extractRenderState(T blockEntity, CraftingTableRenderState renderState, float partialTick, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         BlockEntityRenderer.super.extractRenderState(blockEntity,
                 renderState,
                 partialTick,
@@ -57,7 +57,8 @@ public class CraftingTableBlockEntityRenderer<T extends BlockEntity & Container 
         }
 
         renderState.items = new ArrayList<>();
-        if (VisualWorkbench.CONFIG.get(ClientConfig.class).ingredientRendering != ClientConfig.IngredientRendering.NONE) {
+        if (VisualWorkbench.CONFIG.get(ClientConfig.class).ingredientRendering
+                != ClientConfig.IngredientRendering.NONE) {
             for (int i = 0; i < blockEntity.getContainerSize(); i++) {
                 ItemStackRenderState itemStackRenderState = new ItemStackRenderState();
                 this.itemModelResolver.updateForTopItem(itemStackRenderState,

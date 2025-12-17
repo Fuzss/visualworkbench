@@ -4,10 +4,5 @@ plugins {
 
 dependencies {
     modCompileOnlyApi(libs.puzzleslib.common)
-}
-
-multiloader {
-    mixins {
-        mixin("WorldGenRegionMixin")
-    }
+//    modCompileOnly(libs.jeiapi.common)
 }
