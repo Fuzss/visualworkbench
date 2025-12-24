@@ -5,17 +5,17 @@ plugins {
 dependencies {
     modApi(libs.fabricapi.fabric)
     modApi(libs.puzzleslib.fabric)
-//    modCompileOnly(libs.jeiapi.common)
-//    modLocalRuntime(libs.jei.fabric)
+    modCompileOnly(libs.jeiapi.common)
+    modLocalRuntime(libs.jei.fabric)
 }
 
 multiloader {
     modFile {
         json {
-//            entrypoint(
-//                "jei_mod_plugin",
-//                "${project.group}.integration.jei.VisualWorkbenchJEIPlugin"
-//            )
+            entrypoint(
+                "jei_mod_plugin",
+                "${project.group}.integration.jei.VisualWorkbenchJEIPlugin"
+            )
         }
     }
 }
